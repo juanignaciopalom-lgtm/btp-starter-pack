@@ -1,0 +1,64 @@
+# ─── Dependencies ──────────────────────────────────────────────
+node_modules/
+ui/node_modules/
+
+# ─── Build output ──────────────────────────────────────────────
+dist/
+dist_new/
+dist-ui/
+*.tsbuildinfo
+
+# ─── Vite cache/timestamp files ────────────────────────────────
+ui/vite.config.ts.timestamp-*
+*.timestamp-*.mjs
+
+# ─── Environment files — NEVER commit ──────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ─── BTP/CF session state — NEVER commit ───────────────────────
+.btp/
+.cf/
+.btp-starter.json
+.btp-wizard.json
+ui/.btp-starter.json
+ui/.btp-wizard.json
+
+# ─── Service keys and credentials — NEVER commit ───────────────
+*service-key*.json
+*servicekey*.json
+*credentials*.json
+service-keys/
+
+# ─── Generated projects (output of generate-project command) ───
+my-btp-app/
+ui/my-btp-app/
+generated/
+~/btp-workspace/
+
+# ─── Logs ──────────────────────────────────────────────────────
+logs/
+*.log
+btp-starter-*.log
+
+# ─── Test coverage ─────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ─── IDE ───────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ─── OS ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── SAP BTP trial workspace state ─────────────────────────────
+xs-security.json

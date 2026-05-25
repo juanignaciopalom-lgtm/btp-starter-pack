@@ -1,0 +1,138 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D1117"/>
+      <stop offset="100%" style="stop-color:#0A1628"/>
+    </linearGradient>
+    <linearGradient id="redgrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2D0A0A"/>
+      <stop offset="100%" style="stop-color:#1A0808"/>
+    </linearGradient>
+    <linearGradient id="greengard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2D14"/>
+      <stop offset="100%" style="stop-color:#081A0D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Title -->
+  <text x="600" y="64" text-anchor="middle" fill="#E6EDF3" font-size="28" font-weight="800">Sin BTP Starter Pack vs. Con BTP Starter Pack</text>
+  <line x1="60" y1="80" x2="1140" y2="80" stroke="#30363D" stroke-width="1"/>
+
+  <!-- ─── SIN (ANTES) ─── -->
+  <rect x="60" y="100" width="510" height="430" rx="16" fill="url(#redgard)" stroke="#BB0000" stroke-width="1.5" stroke-opacity="0.5"/>
+  <rect x="60" y="100" width="510" height="44" rx="16" fill="#BB0000" fill-opacity="0.2"/>
+  <rect x="60" y="128" width="510" height="16" rx="0" fill="#BB0000" fill-opacity="0.2"/><!-- square top -->
+  <text x="315" y="130" text-anchor="middle" fill="#F85149" font-size="16" font-weight="800">❌  SIN la herramienta — Setup manual</text>
+
+  <!-- Tasks SIN -->
+  <g fill="#E6EDF3" font-size="13.5">
+    <!-- Row -->
+    <rect x="80" y="158" width="470" height="34" rx="6" fill="#BB0000" fill-opacity="0.12"/>
+    <text x="100" y="180" fill="#F85149">📋</text>
+    <text x="126" y="180">Leer documentación SAP BTP (3-5 horas)</text>
+    <text x="510" y="180" text-anchor="end" fill="#8B949E">~4h</text>
+
+    <rect x="80" y="198" width="470" height="34" rx="6" fill="#1E0808"/>
+    <text x="100" y="220" fill="#F85149">📋</text>
+    <text x="126" y="220">Instalar CF CLI, BTP CLI, MBT, CDS, UI5 CLI manualmente</text>
+    <text x="510" y="220" text-anchor="end" fill="#8B949E">~2h</text>
+
+    <rect x="80" y="238" width="470" height="34" rx="6" fill="#BB0000" fill-opacity="0.12"/>
+    <text x="100" y="260" fill="#F85149">📋</text>
+    <text x="126" y="260">Configurar BTP CLI manualmente (subdomain, region)</text>
+    <text x="510" y="260" text-anchor="end" fill="#8B949E">~1h</text>
+
+    <rect x="80" y="278" width="470" height="34" rx="6" fill="#1E0808"/>
+    <text x="100" y="300" fill="#F85149">📋</text>
+    <text x="126" y="300">Crear CF Space, roles, org manualmente</text>
+    <text x="510" y="300" text-anchor="end" fill="#8B949E">~45m</text>
+
+    <rect x="80" y="318" width="470" height="34" rx="6" fill="#BB0000" fill-opacity="0.12"/>
+    <text x="100" y="340" fill="#F85149">📋</text>
+    <text x="126" y="340">cf create-service para cada servicio (xsuaa, dest, html5...)</text>
+    <text x="510" y="340" text-anchor="end" fill="#8B949E">~2h</text>
+
+    <rect x="80" y="358" width="470" height="34" rx="6" fill="#1E0808"/>
+    <text x="100" y="380" fill="#F85149">📋</text>
+    <text x="126" y="380">Escribir mta.yaml, xs-security.json desde cero</text>
+    <text x="510" y="380" text-anchor="end" fill="#8B949E">~3h</text>
+
+    <rect x="80" y="398" width="470" height="34" rx="6" fill="#BB0000" fill-opacity="0.12"/>
+    <text x="100" y="420" fill="#F85149">📋</text>
+    <text x="126" y="420">Debug de errores de deploy (grant_type, npm-ci, etc.)</text>
+    <text x="510" y="420" text-anchor="end" fill="#8B949E">~4h</text>
+
+    <rect x="80" y="438" width="470" height="34" rx="6" fill="#1E0808"/>
+    <text x="100" y="460" fill="#F85149">📋</text>
+    <text x="126" y="460">Scaffolding manual del proyecto CAP + UI5 + AppRouter</text>
+    <text x="510" y="460" text-anchor="end" fill="#8B949E">~3h</text>
+  </g>
+
+  <!-- Total SIN -->
+  <rect x="80" y="488" width="470" height="30" rx="6" fill="#BB0000" fill-opacity="0.3"/>
+  <text x="100" y="508" fill="#F85149" font-size="14" font-weight="800">⏱  Tiempo total estimado:</text>
+  <text x="510" y="508" text-anchor="end" fill="#F85149" font-size="16" font-weight="800">~20 horas</text>
+
+  <!-- ─── CON (DESPUÉS) ─── -->
+  <rect x="630" y="100" width="510" height="430" rx="16" fill="url(#greengard)" stroke="#107E3E" stroke-width="1.5" stroke-opacity="0.5"/>
+  <rect x="630" y="100" width="510" height="44" rx="16" fill="#107E3E" fill-opacity="0.2"/>
+  <rect x="630" y="128" width="510" height="16" rx="0" fill="#107E3E" fill-opacity="0.2"/>
+  <text x="885" y="130" text-anchor="middle" fill="#56D364" font-size="16" font-weight="800">✅  CON BTP Starter Pack — Wizard guiado</text>
+
+  <!-- Tasks CON -->
+  <g fill="#E6EDF3" font-size="13.5">
+    <rect x="650" y="158" width="470" height="34" rx="6" fill="#107E3E" fill-opacity="0.2"/>
+    <text x="670" y="180" fill="#56D364">✓</text>
+    <text x="692" y="180">Doctor detecta y muestra qué instalar</text>
+    <text x="1080" y="180" text-anchor="end" fill="#56D364">~5m</text>
+
+    <rect x="650" y="198" width="470" height="34" rx="6" fill="#0A1F0D"/>
+    <text x="670" y="220" fill="#56D364">✓</text>
+    <text x="692" y="220">Login guiado paso a paso (BTP + CF)</text>
+    <text x="1080" y="220" text-anchor="end" fill="#56D364">~10m</text>
+
+    <rect x="650" y="238" width="470" height="34" rx="6" fill="#107E3E" fill-opacity="0.2"/>
+    <text x="670" y="260" fill="#56D364">✓</text>
+    <text x="692" y="260">Workspace inicializado con un clic</text>
+    <text x="1080" y="260" text-anchor="end" fill="#56D364">~2m</text>
+
+    <rect x="650" y="278" width="470" height="34" rx="6" fill="#0A1F0D"/>
+    <text x="670" y="300" fill="#56D364">✓</text>
+    <text x="692" y="300">Setup crea todos los servicios CF automáticamente</text>
+    <text x="1080" y="300" text-anchor="end" fill="#56D364">~5m</text>
+
+    <rect x="650" y="318" width="470" height="34" rx="6" fill="#107E3E" fill-opacity="0.2"/>
+    <text x="670" y="340" fill="#56D364">✓</text>
+    <text x="692" y="340">Proyecto CAP + UI5 + AppRouter generado</text>
+    <text x="1080" y="340" text-anchor="end" fill="#56D364">~1m</text>
+
+    <rect x="650" y="358" width="470" height="34" rx="6" fill="#0A1F0D"/>
+    <text x="670" y="380" fill="#56D364">✓</text>
+    <text x="692" y="380">mta.yaml y xs-security.json correctos out-of-the-box</text>
+    <text x="1080" y="380" text-anchor="end" fill="#56D364">~0m</text>
+
+    <rect x="650" y="398" width="470" height="34" rx="6" fill="#107E3E" fill-opacity="0.2"/>
+    <text x="670" y="420" fill="#56D364">✓</text>
+    <text x="692" y="420">Deploy automático — auto-repara errores conocidos</text>
+    <text x="1080" y="420" text-anchor="end" fill="#56D364">~15m</text>
+
+    <rect x="650" y="438" width="470" height="34" rx="6" fill="#0A1F0D"/>
+    <text x="670" y="460" fill="#56D364">✓</text>
+    <text x="692" y="460">App en producción ✅</text>
+    <text x="1080" y="460" text-anchor="end" fill="#56D364">—</text>
+  </g>
+
+  <!-- Total CON -->
+  <rect x="650" y="488" width="470" height="30" rx="6" fill="#107E3E" fill-opacity="0.4"/>
+  <text x="670" y="508" fill="#56D364" font-size="14" font-weight="800">⏱  Tiempo total:</text>
+  <text x="1080" y="508" text-anchor="end" fill="#56D364" font-size="16" font-weight="800">~38 minutos</text>
+
+  <!-- VS Badge -->
+  <circle cx="600" cy="315" r="28" fill="#0D1117" stroke="#30363D" stroke-width="2"/>
+  <text x="600" y="322" text-anchor="middle" fill="#8B949E" font-size="14" font-weight="800">VS</text>
+
+  <!-- Bottom tagline -->
+  <text x="600" y="590" text-anchor="middle" fill="#58A6FF" font-size="18" font-weight="700">De 20 horas a 38 minutos. Mismo resultado. Sin errores manuales.</text>
+</svg>

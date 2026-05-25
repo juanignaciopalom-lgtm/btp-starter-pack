@@ -1,0 +1,9 @@
+[
+  { "name": "xsuaa", "plans": ["application", "broker", "space"], "description": "SAP Authorization and Trust Management" },
+  { "name": "destination", "plans": ["lite"], "description": "SAP Destination Service" },
+  { "name": "connectivity", "plans": ["lite"], "description": "SAP Connectivity Service" },
+  { "name": "html5-apps-repo", "plans": ["app-host", "app-runtime"], "description": "HTML5 Application Repository" },
+  { "name": "application-logs", "plans": ["lite"], "description": "SAP Application Logging" },
+  { "name": "alert-notification", "plans": ["free", "standard"], "description": "SAP Alert Notification Service" },
+  { "name": "jobscheduler", "plans": ["lite", "standard"], "description": "SAP Job Scheduling Service" }
+]

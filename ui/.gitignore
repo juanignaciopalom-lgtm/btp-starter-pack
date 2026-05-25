@@ -1,0 +1,15 @@
+# BTP credentials — NEVER commit
+.env
+*service-key*.json
+*credentials*.json
+service-keys/
+
+# BTP/CF sessions
+.btp/
+.cf/
+
+# Logs
+logs/
+*.log
+
+node_modules/

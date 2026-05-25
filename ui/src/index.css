@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    @apply bg-surface-1 text-gray-100;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-surface-2; }
+  ::-webkit-scrollbar-thumb { @apply bg-surface-4 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-gray-500; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-sap-blue hover:bg-sap-blue-dark text-white font-semibold px-5 py-2.5 rounded-lg
+           transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-sap-blue focus:ring-offset-2 focus:ring-offset-surface-2;
+  }
+  .btn-secondary {
+    @apply bg-surface-3 hover:bg-surface-4 text-gray-200 font-semibold px-5 py-2.5 rounded-lg
+           border border-surface-4 transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-surface-2;
+  }
+  .btn-ghost {
+    @apply text-gray-400 hover:text-gray-200 hover:bg-surface-3 px-3 py-1.5 rounded-md
+           text-sm transition-colors duration-150;
+  }
+  .card {
+    @apply bg-surface-2 border border-surface-3 rounded-xl p-5;
+  }
+  .input-field {
+    @apply w-full bg-surface-3 border border-surface-4 text-gray-100 rounded-lg px-4 py-2.5
+           placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sap-blue focus:border-sap-blue
+           transition-colors duration-150;
+  }
+}
+
+/* Terminal output */
+.terminal-output {
+  @apply bg-black rounded-lg p-4 overflow-y-auto font-mono text-xs text-green-400;
+  min-height: 120px;
+  max-height: 320px;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Pulse dot for running state */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+.pulse-dot {
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
