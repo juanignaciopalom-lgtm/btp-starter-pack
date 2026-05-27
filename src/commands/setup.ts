@@ -144,13 +144,66 @@ export function setupCommand(): Command {
         results.push({ step: 'CF Space', success: true, note: 'already exists' });
       }
 
-      // ── Step 2: Verify CF target ──────────────────────────────────────────────
-      if (!dryRun && config.cfOrg && config.cfSpace) {
-        await cfTargetOrgSpace(config.cfOrg, config.cfSpace, { throwOnError: false });
-        const target = await cfGetTarget({ silent: true });
-        if (target) {
-          logger.success(`CF target confirmed: org=${target.org}, space=${target.space}`);
+      // ── Step 2: Ensure CF org + space are targeted ───────────────────────────
+      // Strategy (in order):
+      //   A) If CF already has a valid org+space targeted → use it as-is.
+      //   B) If config.cfOrg is set → try cf target -o cfOrg -s cfSpace.
+      //   C) If that fails → auto-detect actual org from `cf orgs` and retry.
+      //   D) If still no target → abort with actionable message.
+      // We always sync config with the actual targeted org/space so later steps
+      // (service creation, deploy) never operate on a stale/wrong value.
+      if (!dryRun) {
+        let target = await cfGetTarget({ silent: true });
+
+        if (!target?.org || !target?.space) {
+          // (B) Try setting from config
+          if (config.cfOrg && config.cfSpace) {
+            logger.info(`Setting CF target: org=${config.cfOrg}, space=${config.cfSpace}`);
+            await cfTargetOrgSpace(config.cfOrg, config.cfSpace, { throwOnError: false });
+            target = await cfGetTarget({ silent: true });
+          }
+
+          // (C) Config value might be wrong → auto-detect from `cf orgs`
+          if (!target?.org || !target?.space) {
+            logger.info('CF target not set from config — auto-detecting org from CF CLI...');
+            const orgs = await cfListOrgs({ silent: true, throwOnError: false });
+            if (orgs.length > 0) {
+              const detectedOrg = orgs[0]?.name ?? '';
+              logger.info(`Detected CF org: ${detectedOrg}`);
+              await cfTargetOrgSpace(detectedOrg, config.cfSpace, { throwOnError: false });
+              target = await cfGetTarget({ silent: true });
+              if (target?.org) {
+                updateConfig({ cfOrg: detectedOrg }, workspaceDir);
+                config.cfOrg = detectedOrg;
+              }
+            }
+          }
+
+          // (D) Hard fail — services will 100% fail without a target
+          if (!target?.org || !target?.space) {
+            logger.error('CF org and space are not targeted. Cannot create services.');
+            logger.blank();
+            console.log(chalk.yellow.bold('  To fix this, run the following command in your terminal:'));
+            console.log(chalk.white(`  cf target -o YOUR_CF_ORG -s ${config.cfSpace || 'dev'}`));
+            console.log(chalk.gray('\n  To find your CF org name, run:  cf orgs'));
+            console.log(chalk.gray('  Then come back and run setup again.'));
+            process.exit(1);
+          }
         }
+
+        // Sync config with actual targeted org/space (prevents future drift)
+        if (target.org && target.org !== config.cfOrg) {
+          logger.info(`Updating config cfOrg: "${config.cfOrg}" → "${target.org}"`);
+          updateConfig({ cfOrg: target.org }, workspaceDir);
+          config.cfOrg = target.org;
+        }
+        if (target.space && target.space !== config.cfSpace) {
+          logger.info(`Updating config cfSpace: "${config.cfSpace}" → "${target.space}"`);
+          updateConfig({ cfSpace: target.space }, workspaceDir);
+          config.cfSpace = target.space;
+        }
+
+        logger.success(`CF target confirmed: org=${target.org}, space=${target.space}`);
       }
 
       // ── Step 3: Check marketplace ─────────────────────────────────────────────

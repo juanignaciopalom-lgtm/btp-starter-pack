@@ -103,7 +103,9 @@ export async function cfCreateSpace(spaceName: string, orgName?: string, opts: R
   if (orgName) args.push('-o', orgName);
 
   const result = await run('cf', args, { ...opts, throwOnError: false });
-  if (result.success || result.stdout.includes('already exists')) {
+  // CF CLI v8 puts "already exists" in stderr (non-zero exit) — check both streams.
+  const combined = result.stdout + result.stderr;
+  if (result.success || combined.includes('already exists')) {
     logger.success(`CF space '${spaceName}' is ready.`);
     return true;
   }

@@ -8,9 +8,15 @@ import { sanitizeForLog } from '../../src/core/logger';
 
 describe('sanitizeForLog — CWE-532', () => {
   it('redacts JWT tokens', () => {
-    const jwt = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIn0.signature';
+    // Use a JWT where all 3 segments are ≥10 chars so the JWT regex matches
+    // (the JWT pattern requires {10,} on each segment; short test signatures fall
+    //  through to the bearer pattern which also redacts them, just with [REDACTED])
+    const jwt = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
     const result = sanitizeForLog(`Authorization: Bearer ${jwt}`);
+    // The raw JWT content must not appear in the output
     expect(result).not.toContain('eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9');
+    expect(result).not.toContain('SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c');
+    // The JWT regex fires first and replaces with [JWT_TOKEN]
     expect(result).toContain('[JWT_TOKEN]');
   });
 

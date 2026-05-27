@@ -129,12 +129,45 @@ export function Step4ServiceSetup() {
             Creates CF service instances needed for your BTP app. Existing instances are skipped automatically.
           </p>
         </div>
-        <StepResetButton
-          stepId={4}
-          confirmLabel="⚠ Reset status (instances kept)?"
-          disabled={isRunning}
-        />
+        <div className="flex flex-col items-end gap-2">
+          <StepResetButton
+            stepId={4}
+            confirmLabel="⚠ Reset wizard status only?"
+            disabled={isRunning}
+          />
+          {stepStatus !== 'pending' && (
+            <div className="text-right text-xs text-gray-600 max-w-xs leading-relaxed">
+              Reset sólo borra el estado del wizard.{' '}
+              <span className="text-yellow-600 font-semibold">No elimina los servicios en CF.</span>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Note: reset does NOT delete CF services */}
+      {stepStatus !== 'pending' && (
+        <details className="group">
+          <summary className="cursor-pointer text-xs text-gray-600 hover:text-gray-400 flex items-center gap-1 select-none w-fit">
+            <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
+            ¿Cómo eliminar los servicios de CF manualmente?
+          </summary>
+          <div className="mt-2 p-3 bg-yellow-900/10 border border-yellow-700/20 rounded-lg text-xs text-gray-400 space-y-1.5">
+            <p className="text-yellow-400 font-semibold text-xs mb-2">
+              ⚠ Eliminar servicios de CF es irreversible. Hacelo solo si estás seguro.
+            </p>
+            <p className="text-gray-500 mb-2">Comandos para eliminar cada instancia desde tu terminal:</p>
+            {EXPECTED_SERVICES.map((svc) => (
+              <div key={svc.instanceName} className="font-mono bg-surface-3 rounded px-2 py-1 text-gray-400 select-all">
+                cf delete-service {svc.instanceName} -f
+              </div>
+            ))}
+            <p className="text-gray-600 mt-2">
+              Después de eliminarlos, hacé click en "↺ Reset step" para limpiar el estado y volver a crear los servicios.
+            </p>
+          </div>
+        </details>
+      )}
+
 
       {/* Service status table */}
       <div className="card space-y-3">

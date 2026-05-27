@@ -1132,19 +1132,13 @@ router.get('/verify/step', async (req: Request, res: Response) => {
             apps,
           });
         } else {
-          // cf apps ran OK but parser found nothing — likely CF CLI v7+ format difference
-          // or apps are still in staging. If cf apps returned any output after the header,
-          // trust the deploy completed and allow the step to be marked done.
-          const outputLines = (cfAppsRaw as { stdout: string }).stdout
-            .split('\n')
-            .filter((l) => l.trim() && !l.startsWith('Getting apps'));
-
+          // cf apps ran OK but no apps found — deploy hasn't run yet, or apps were deleted.
+          // Do NOT return ok:true here: completing Step 6 with no apps deployed is misleading.
+          // The user should either deploy first or verify in BTP Cockpit.
           res.json({
-            ok: true,
-            details: 'Deploy completed. Apps may still be starting up — verify in BTP Cockpit.',
+            ok: false,
+            details: 'No apps found in your CF space. Deploy first, then click Verify & Complete.',
             apps: [],
-            warning: 'Could not parse app list from CF CLI output. Check the BTP Cockpit to confirm your apps are running.',
-            rawOutput: outputLines.slice(0, 5).join(' | '),
           });
         }
         break;

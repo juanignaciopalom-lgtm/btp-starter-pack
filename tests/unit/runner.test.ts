@@ -6,11 +6,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { isSafeArg, CommandError } from '../../src/core/runner';
 
-// Mock execa (v5 uses default export) to avoid real subprocess calls
-const mockExeca = vi.fn().mockResolvedValue({ stdout: 'mock output', stderr: '', exitCode: 0 });
+// vi.mock() calls are hoisted to the top of the file by Vitest.
+// Variables declared with const/let are NOT available at hoist time.
+// vi.hoisted() creates variables that ARE available when the factory runs.
+const mockExeca = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ stdout: 'mock output', stderr: '', exitCode: 0 })
+);
+
 vi.mock('execa', () => ({
   default: mockExeca,
-  execa: mockExeca, // also expose as named for test assertions
+  execa: mockExeca,
 }));
 
 // Mock logger to avoid file system writes

@@ -784,19 +784,27 @@ describe('catalog endpoints', () => {
 // ── GET /api/jobs/:id — job ID validation ─────────────────────────────────────
 
 describe('GET /api/jobs/:id — input validation', () => {
-  it('returns 400 for non-UUID job ID (CWE-20)', async () => {
-    const r = await get('/jobs/../../../etc/passwd');
-    // Router won't match this route cleanly, but check no path traversal
-    expect(r.status).not.toBe(200);
+  it('returns 400 for malformed job ID (CWE-20: Zod UUID check)', async () => {
+    // Non-UUID strings are rejected by the JOB_ID_PATTERN regex before any job lookup
+    const r = await get('/jobs/not-a-uuid');
+    expect(r.status).toBe(400);
   });
 
-  it('returns 400 for malformed job ID', async () => {
-    const r = await get('/jobs/not-a-uuid');
+  it('returns 400 for shell-injection-style job ID', async () => {
+    // Characters like semicolons should be rejected by the UUID pattern
+    const r = await get('/jobs/12345678-1234-1234-1234-12345678;id#');
     expect(r.status).toBe(400);
   });
 
   it('returns 404 for valid UUID that does not exist', async () => {
     const r = await get('/jobs/12345678-1234-1234-1234-123456789abc');
     expect(r.status).toBe(404);
+  });
+
+  it('returns 400 for empty job ID segment', async () => {
+    // An extra slash or empty segment should not match the UUID route
+    const r = await get('/jobs/');
+    // Express either returns 400 (if routed) or 404 (no match) — neither is 200 from a job
+    expect([400, 404]).toContain(r.status);
   });
 });

@@ -39,9 +39,19 @@ describe('renderTemplate', () => {
     expect(result).toBe('Year: 2025');
   });
 
-  it('does NOT process nested or computed expressions', () => {
-    // Template engine is intentionally simple — no code execution
+  it('does NOT process computed expressions — leaves them unchanged', () => {
+    // Template engine is intentionally simple — no code execution.
+    // The regex \w+ only matches word chars ([a-zA-Z0-9_]); operators like + are not
+    // word chars, so {{1+1}} is never matched and is returned verbatim.
+    // This is the correct safe behavior: unrecognized patterns are left as-is,
+    // NOT evaluated as JavaScript or replaced with empty string.
     const result = renderTemplate('{{1+1}}', {});
-    expect(result).toBe('');
+    expect(result).toBe('{{1+1}}');
+  });
+
+  it('does NOT process dot-access expressions — leaves them unchanged', () => {
+    // {{obj.key}} contains a dot (not a word char), so it is NOT matched.
+    const result = renderTemplate('{{obj.key}}', {});
+    expect(result).toBe('{{obj.key}}');
   });
 });
