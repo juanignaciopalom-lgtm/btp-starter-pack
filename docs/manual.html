@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BTP Starter Pack — Manual Interactivo</title>
+  <style>
+    :root {
+      --sap-blue: #0070F2;
+      --sap-blue-dark: #0050B3;
+      --sap-teal: #0A6ED1;
+      --sap-green: #107E3E;
+      --sap-orange: #E76500;
+      --sap-red: #BB0000;
+      --sap-grey: #6A6D70;
+      --bg-dark: #0D1117;
+      --bg-card: #161B22;
+      --bg-card2: #1E252F;
+      --border: #30363D;
+      --text: #E6EDF3;
+      --text-muted: #8B949E;
+      --code-bg: #0D1117;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    /* ─── TOP NAV ─── */
+    header {
+      background: linear-gradient(135deg, #0D1117 0%, #0A1628 100%);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--sap-blue), var(--sap-teal));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .logo-text { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .logo-sub { font-size: 0.75rem; color: var(--text-muted); }
+    nav { display: flex; gap: 4px; flex-wrap: wrap; }
+    nav button {
+      background: none; border: none; color: var(--text-muted);
+      padding: 7px 12px; border-radius: 8px; cursor: pointer;
+      font-size: 0.82rem; transition: all .2s;
+    }
+    nav button:hover { background: var(--bg-card2); color: var(--text); }
+    nav button.active { background: var(--sap-blue); color: white; }
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(135deg, #0D1B2E 0%, #0A1117 60%, #0D1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 72px 2rem 60px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(0,112,242,0.15);
+      border: 1px solid rgba(0,112,242,0.4);
+      color: #58A6FF;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 2.9rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #58A6FF, #79C0FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 660px;
+      margin: 0 auto 16px;
+    }
+    .hero-author {
+      font-size: 0.85rem;
+      color: #58A6FF;
+      margin-bottom: 32px;
+      opacity: 0.8;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-value { font-size: 2rem; font-weight: 800; color: #58A6FF; }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    /* ─── SECTIONS / TABS ─── */
+    .content { max-width: 1200px; margin: 0 auto; padding: 40px 2rem; }
+    .section { display: none; }
+    .section.active { display: block; }
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; color: #58A6FF; }
+    .card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; color: var(--text); }
+    .card p { color: var(--text-muted); font-size: 0.95rem; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    /* ─── STEP WIZARD ─── */
+    .wizard { display: flex; flex-direction: column; gap: 0; }
+    .step { display: flex; gap: 20px; cursor: pointer; }
+    .step-line { display: flex; flex-direction: column; align-items: center; }
+    .step-num {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem;
+      flex-shrink: 0;
+      transition: all .3s;
+      border: 2px solid var(--border);
+      background: var(--bg-card2);
+      color: var(--text-muted);
+    }
+    .step-num.done { background: var(--sap-green); border-color: var(--sap-green); color: white; }
+    .step-num.active { background: var(--sap-blue); border-color: var(--sap-blue); color: white; box-shadow: 0 0 0 4px rgba(0,112,242,0.2); }
+    .step-connector { width: 2px; flex: 1; background: var(--border); margin: 4px 0; min-height: 20px; }
+    .step-body { padding: 0 0 28px 0; flex: 1; }
+    .step-header { display: flex; align-items: center; gap: 12px; padding: 8px 0 4px; }
+    .step-title { font-size: 1.05rem; font-weight: 700; }
+    .step-detail {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 12px;
+      display: none;
+    }
+    .step-detail.open { display: block; }
+    .step:hover .step-num:not(.done):not(.active) { border-color: var(--sap-blue); color: var(--sap-blue); }
+    /* ─── BADGE ─── */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .badge-auto { background: rgba(16,126,62,0.2); color: #56D364; border: 1px solid rgba(16,126,62,0.4); }
+    .badge-semi { background: rgba(231,101,0,0.2); color: #F0883E; border: 1px solid rgba(231,101,0,0.4); }
+    .badge-manual { background: rgba(187,0,0,0.2); color: #F85149; border: 1px solid rgba(187,0,0,0.4); }
+    .badge-info { background: rgba(0,112,242,0.2); color: #58A6FF; border: 1px solid rgba(0,112,242,0.4); }
+    .badge-future { background: rgba(163,113,247,0.2); color: #C9A0F8; border: 1px solid rgba(163,113,247,0.4); }
+    /* ─── CODE ─── */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+      font-size: 0.875rem;
+      overflow-x: auto;
+      margin: 12px 0;
+      position: relative;
+    }
+    .code-block .prompt { color: #56D364; user-select: none; }
+    .code-block .cmd { color: #79C0FF; }
+    .code-block .comment { color: #8B949E; }
+    .copy-btn {
+      position: absolute; top: 10px; right: 10px;
+      background: var(--bg-card2); border: 1px solid var(--border);
+      color: var(--text-muted); border-radius: 6px;
+      padding: 4px 10px; font-size: 0.75rem; cursor: pointer;
+      transition: all .2s;
+    }
+    .copy-btn:hover { background: var(--sap-blue); color: white; border-color: var(--sap-blue); }
+    /* ─── TABLE ─── */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    th { text-align: left; padding: 10px 14px; background: var(--bg-card2); color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 10px 14px; border-top: 1px solid var(--border); color: var(--text); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    /* ─── CALLOUT ─── */
+    .callout {
+      border-left: 4px solid;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .callout-info { border-color: var(--sap-blue); background: rgba(0,112,242,0.08); }
+    .callout-warn { border-color: var(--sap-orange); background: rgba(231,101,0,0.08); }
+    .callout-success { border-color: var(--sap-green); background: rgba(16,126,62,0.08); }
+    .callout-error { border-color: var(--sap-red); background: rgba(187,0,0,0.08); }
+    .callout-purple { border-color: #8B5CF6; background: rgba(139,92,246,0.08); }
+    .callout strong { display: block; margin-bottom: 4px; }
+    /* ─── CHECKLIST ─── */
+    .checklist { list-style: none; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .check-box {
+      width: 20px; height: 20px; border-radius: 4px;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .check-box.checked { background: var(--sap-green); border-color: var(--sap-green); }
+    .check-box.checked::after { content: '✓'; color: white; font-size: 13px; font-weight: 800; }
+    .check-text { flex: 1; }
+    .check-text.checked { text-decoration: line-through; color: var(--text-muted); }
+    /* ─── URL CARD ─── */
+    .url-card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .url-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .url-info { flex: 1; }
+    .url-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .url-link { color: #58A6FF; text-decoration: none; font-size: 0.9rem; font-family: monospace; word-break: break-all; }
+    .url-link:hover { text-decoration: underline; }
+    .url-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    /* ─── PROGRESS ─── */
+    .progress-bar { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--sap-blue), #58A6FF); border-radius: 4px; }
+    /* ─── FEATURE GRID ─── */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0; }
+    .feature-item {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .feature-item .icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .feature-item h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .feature-item p { font-size: 0.85rem; color: var(--text-muted); }
+    /* ─── TROUBLESHOOT ─── */
+    .trouble-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .trouble-q {
+      padding: 14px 18px;
+      background: var(--bg-card2);
+      cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: 600; font-size: 0.9rem;
+    }
+    .trouble-q:hover { background: rgba(0,112,242,0.1); }
+    .trouble-q .arrow { transition: transform .2s; color: var(--text-muted); }
+    .trouble-q.open .arrow { transform: rotate(180deg); }
+    .trouble-a { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height .4s, padding .3s; }
+    .trouble-a.open { max-height: 1000px; padding: 16px 18px; }
+    /* ─── ERROR REPORT FORM ─── */
+    .report-form {
+      background: var(--bg-card2);
+      border: 1px solid rgba(139,92,246,0.4);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+    .report-form h3 { color: #C9A0F8; margin-bottom: 12px; }
+    .form-field { margin-bottom: 14px; }
+    .form-field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+    .form-field select, .form-field input, .form-field textarea {
+      width: 100%;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: border-color .2s;
+    }
+    .form-field select:focus, .form-field input:focus, .form-field textarea:focus {
+      outline: none; border-color: #8B5CF6;
+    }
+    .form-field textarea { resize: vertical; min-height: 90px; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--sap-blue), #58A6FF);
+      border: none; color: white;
+      padding: 10px 24px; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,112,242,0.4); }
+    .btn-purple {
+      background: linear-gradient(135deg, #7C3AED, #8B5CF6);
+      border: none; color: white;
+      padding: 10px 24px; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-purple:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(139,92,246,0.4); }
+    /* ─── FUTURE FEATURE ─── */
+    .future-card {
+      border: 1px dashed rgba(163,113,247,0.4);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 16px;
+      background: rgba(139,92,246,0.04);
+    }
+    .future-card h4 { color: #C9A0F8; font-size: 1rem; margin-bottom: 8px; }
+    .future-card p { font-size: 0.9rem; color: var(--text-muted); }
+    /* ─── AUTHOR ─── */
+    .author-card {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-top: 16px;
+    }
+    .author-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sap-blue), #58A6FF);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .author-name { font-weight: 700; font-size: 1rem; }
+    .author-title { font-size: 0.85rem; color: var(--text-muted); }
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      nav button { padding: 5px 8px; font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════ HEADER ══════════════════════ -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#" onclick="showSection('overview');return false;">
+      <div class="logo-icon">🚀</div>
+      <div>
+        <div class="logo-text">BTP Starter Pack</div>
+        <div class="logo-sub">SAP BTP Deployment Wizard</div>
+      </div>
+    </a>
+    <nav>
+      <button class="active" onclick="showSection('overview')">Overview</button>
+      <button onclick="showSection('quickstart')">Quick Start</button>
+      <button onclick="showSection('wizard')">Wizard</button>
+      <button onclick="showSection('devsetup')">Dev Setup</button>
+      <button onclick="showSection('urls')">URLs & Config</button>
+      <button onclick="showSection('troubleshoot')">Troubleshooting</button>
+      <button onclick="showSection('checklist')">Checklist</button>
+      <button onclick="showSection('roadmap')" style="color:#C9A0F8">Roadmap</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<section class="hero">
+  <div class="hero-badge">✦ SAP BTP Automation Tool — v1.1.0</div>
+  <h1>El setup de SAP BTP que<br/>siempre quisiste tener</h1>
+  <p>BTP Starter Pack es el wizard interactivo que automatiza el 80% de la configuración de SAP BTP Cloud Foundry — y genera una base de aplicación funcional, estructurada y lista para evolucionar.</p>
+  <div class="hero-author">por Juan Ignacio Palomeque · SAP Fullstack Developer Sr</div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-value">6</div><div class="stat-label">Pasos guiados</div></div>
+    <div class="stat"><div class="stat-value">80%</div><div class="stat-label">Tareas automatizadas</div></div>
+    <div class="stat"><div class="stat-value">4</div><div class="stat-label">Auto-repairs incluidos</div></div>
+    <div class="stat"><div class="stat-value">0</div><div class="stat-label">Credenciales guardadas</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════ CONTENT ══════════════════════ -->
+<div class="content">
+
+  <!-- ═══════════ SECTION: OVERVIEW ═══════════ -->
+  <section id="overview" class="section active">
+    <div class="card">
+      <h2>¿Qué es BTP Starter Pack?</h2>
+      <p style="margin-top:8px;font-size:1rem;color:var(--text)">
+        Una aplicación web <strong>con wizard paso a paso</strong> que guía a cualquier desarrollador o consultor SAP a través de la configuración de un entorno SAP BTP Cloud Foundry — y genera proyectos full-stack estructurados, con mejores prácticas aplicadas y listos para evolucionar hacia producción.
+      </p>
+      <div class="callout callout-info" style="margin-top:16px">
+        <strong>📐 Honestidad ante todo</strong>
+        La herramienta entrega una base sólida y funcional. El camino hacia producción real depende de requisitos de negocio, seguridad y arquitectura propios de cada cliente — la herramienta elimina el trabajo inicial más tedioso y propenso a errores.
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="icon">🩺</div>
+        <h4>Diagnóstico automático</h4>
+        <p>Detecta todas las herramientas faltantes (Node, CF CLI, BTP CLI, CDS, UI5, MBT) y muestra cómo instalar cada una.</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🔐</div>
+        <h4>Login guiado</h4>
+        <p>Conecta con BTP CLI y CF CLI via OIDC. Sin guardar contraseñas. Sin configuración manual de endpoints.</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">⚙️</div>
+        <h4>Setup de servicios CF</h4>
+        <p>Crea automáticamente XSUAA, Destination, HTML5 App Repository, Application Logging y más en Cloud Foundry.</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🏗️</div>
+        <h4>Generador de proyectos</h4>
+        <p>Scaffolding completo: CAP + SAPUI5 + AppRouter con mta.yaml, xs-security.json y templates de destinos.</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🔧</div>
+        <h4>4 Auto-repairs integrados</h4>
+        <p>Detecta y corrige los errores más comunes del mta.yaml antes del build — sin intervención del usuario.</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🛡️</div>
+        <h4>Seguridad by design</h4>
+        <p>Sin almacenamiento de credenciales. Prevención de command injection. Logs sanitizados. Dry-run por defecto.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Automatización vs. Manual</h3>
+      <table>
+        <tr><th>Acción</th><th>Tipo</th><th>Detalle</th></tr>
+        <tr><td>Verificar dependencias locales</td><td><span class="badge badge-auto">Auto</span></td><td>Detecta versiones y muestra instrucciones de instalación</td></tr>
+        <tr><td>Login a BTP CLI y CF CLI</td><td><span class="badge badge-semi">Semi</span></td><td>Browser OIDC requerido por SAP — no es posible headless</td></tr>
+        <tr><td>Detectar subaccount y CF environment</td><td><span class="badge badge-auto">Auto</span></td><td>Lectura de configuración local del CLI</td></tr>
+        <tr><td>Crear CF Space</td><td><span class="badge badge-auto">Auto</span></td><td>cf create-space ejecutado automáticamente</td></tr>
+        <tr><td>Crear servicios CF (xsuaa, destination, html5, logs)</td><td><span class="badge badge-auto">Auto</span></td><td>cf create-service para cada servicio</td></tr>
+        <tr><td>Crear service keys</td><td><span class="badge badge-auto">Auto</span></td><td>cf create-service-key automático</td></tr>
+        <tr><td>Generar xs-security.json</td><td><span class="badge badge-auto">Auto</span></td><td>Template renderizado con nombre del proyecto</td></tr>
+        <tr><td>Scaffolding CAP + SAPUI5 + AppRouter</td><td><span class="badge badge-auto">Auto</span></td><td>Estructura completa con mta.yaml</td></tr>
+        <tr><td>Auto-reparar mta.yaml antes del deploy</td><td><span class="badge badge-auto">Auto</span></td><td>4 fixes aplicados automáticamente</td></tr>
+        <tr><td>Build (mbt) y Deploy (cf deploy)</td><td><span class="badge badge-auto">Auto</span></td><td>Ejecutado desde la UI con polling de estado</td></tr>
+        <tr><td>Suscribir a BAS</td><td><span class="badge badge-manual">Manual</span></td><td>Limitación de SAP BTP Trial — requiere Cockpit</td></tr>
+        <tr><td>Asignar Role Collections al usuario</td><td><span class="badge badge-manual">Manual</span></td><td>Security → Role Collections en Cockpit</td></tr>
+        <tr><td>Configurar Destinations (S/4HANA)</td><td><span class="badge badge-manual">Manual</span></td><td>Templates provistos, configuración en Cockpit</td></tr>
+        <tr><td>Crear SAP HANA Cloud</td><td><span class="badge badge-manual">Manual</span></td><td>Requiere wizard de Cockpit (limitación SAP)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Stack tecnológico</h3>
+      <div class="card-grid">
+        <div>
+          <p style="color:var(--text-muted);font-size:0.8rem;text-transform:uppercase;margin-bottom:8px">Backend de la herramienta</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="badge badge-info">Node.js 18+</span>
+            <span class="badge badge-info">TypeScript 5</span>
+            <span class="badge badge-info">Express 4</span>
+            <span class="badge badge-info">Commander.js</span>
+            <span class="badge badge-info">Winston Logger</span>
+            <span class="badge badge-info">Zod Validation</span>
+          </div>
+        </div>
+        <div>
+          <p style="color:var(--text-muted);font-size:0.8rem;text-transform:uppercase;margin-bottom:8px">Frontend de la herramienta</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="badge badge-info">React 18</span>
+            <span class="badge badge-info">Vite 5</span>
+            <span class="badge badge-info">Tailwind CSS</span>
+            <span class="badge badge-info">TypeScript</span>
+          </div>
+        </div>
+        <div>
+          <p style="color:var(--text-muted);font-size:0.8rem;text-transform:uppercase;margin-bottom:8px">SAP Stack generado</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="badge badge-info">CAP Node.js</span>
+            <span class="badge badge-info">SAPUI5</span>
+            <span class="badge badge-info">AppRouter</span>
+            <span class="badge badge-info">XSUAA</span>
+            <span class="badge badge-info">MTA Build</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Creado por</h3>
+      <div class="author-card">
+        <div class="author-avatar">👨‍💻</div>
+        <div>
+          <div class="author-name">Juan Ignacio Palomeque</div>
+          <div class="author-title">SAP Fullstack Developer Sr</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">Desarrollador especializado en SAP BTP, CAP framework, SAPUI5 y arquitecturas Cloud Foundry enterprise.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION: QUICK START ═══════════ -->
+  <section id="quickstart" class="section">
+    <div class="card">
+      <h2>Quick Start — De cero a running en 5 minutos</h2>
+      <p style="margin-top:8px">Requisito previo: tener Node.js 18+ instalado.</p>
+    </div>
+
+    <div class="card">
+      <h3>1. Clonar e instalar</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        <pre><span class="comment"># Clonar el repositorio</span>
+<span class="prompt">$</span> <span class="cmd">git clone https://github.com/juanignaciopalom-lgtm/rma.git</span>
+<span class="prompt">$</span> <span class="cmd">cd rma/btp-starter-pack</span>
+
+<span class="comment"># Instalar dependencias</span>
+<span class="prompt">$</span> <span class="cmd">npm install</span>
+
+<span class="comment"># Compilar TypeScript → JavaScript</span>
+<span class="prompt">$</span> <span class="cmd">npm run build</span>
+
+<span class="comment"># Compilar también el frontend React</span>
+<span class="prompt">$</span> <span class="cmd">npm run build:ui</span></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2. Iniciar el servidor y abrir el wizard</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        <pre><span class="comment"># Iniciar servidor + abrir UI automáticamente en el browser</span>
+<span class="prompt">$</span> <span class="cmd">node dist/index.js ui</span>
+
+<span class="comment"># O con npm:</span>
+<span class="prompt">$</span> <span class="cmd">npm run start:ui</span></pre>
+      </div>
+      <div class="callout callout-success">
+        <strong>✅ El wizard se abre en tu browser</strong>
+        El servidor escucha en <code>http://localhost:3001</code> — la UI se abre automáticamente.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3. Seguir los 6 pasos del wizard</h3>
+      <p>La interfaz te guía paso a paso. Cada paso tiene un botón de acción, estado visual y mensajes de error claros.</p>
+      <div class="progress-bar" style="margin-top:16px"><div class="progress-fill" style="width:83%"></div></div>
+      <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">Ejemplo: 5 de 6 pasos completados</div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION: WIZARD STEPS ═══════════ -->
+  <section id="wizard" class="section">
+    <div class="card">
+      <h2>El Wizard — 6 Pasos</h2>
+      <p style="margin-top:8px">Cada paso es secuencial. El wizard guarda el estado y puede retomar donde quedó. Hacé clic en cada paso para ver detalles.</p>
+    </div>
+
+    <div class="wizard">
+
+      <!-- STEP 1 -->
+      <div class="step" onclick="toggleStep(1)">
+        <div class="step-line">
+          <div class="step-num done" id="sn1">✓</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-header">
+            <div class="step-title">Paso 1 — Doctor: Verificar Dependencias</div>
+            <span class="badge badge-auto">Automático</span>
+          </div>
+          <div class="step-detail" id="sd1">
+            <p style="margin-bottom:12px">Verifica que todas las herramientas necesarias estén instaladas y en el PATH.</p>
+            <table>
+              <tr><th>Herramienta</th><th>Versión mínima</th><th>Cómo instalar</th></tr>
+              <tr><td>Node.js</td><td>18+ LTS</td><td><code>winget install OpenJS.NodeJS.LTS</code></td></tr>
+              <tr><td>Git</td><td>2.x</td><td><code>winget install Git.Git</code></td></tr>
+              <tr><td>CF CLI</td><td>8.x</td><td><a class="url-link" href="https://github.com/cloudfoundry/cli/releases/latest" target="_blank">GitHub Releases</a></td></tr>
+              <tr><td>SAP BTP CLI</td><td>2.x</td><td><a class="url-link" href="https://tools.hana.ondemand.com/#cloud" target="_blank">SAP Tools</a></td></tr>
+              <tr><td>SAP CDS CLI</td><td>7+</td><td><code>npm install -g @sap/cds-dk</code></td></tr>
+              <tr><td>UI5 CLI</td><td>3+</td><td><code>npm install -g @ui5/cli</code></td></tr>
+              <tr><td>MBT</td><td>1.2+</td><td><code>npm install -g mbt</code></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step" onclick="toggleStep(2)">
+        <div class="step-line">
+          <div class="step-num done" id="sn2">✓</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-header">
+            <div class="step-title">Paso 2 — BTP Login: Conectar SAP BTP CLI</div>
+            <span class="badge badge-semi">Semi-auto</span>
+          </div>
+          <div class="step-detail" id="sd2">
+            <p style="margin-bottom:12px">Autentica contra SAP BTP usando tu cuenta SAP.</p>
+            <div class="callout callout-warn">
+              <strong>⚠ Limitación de SAP BTP:</strong>
+              SAP no permite autenticación headless. Se abrirá tu browser para el flujo OIDC. Es un requerimiento de SAP, no de esta herramienta.
+            </div>
+            <p style="margin:12px 0">Datos que necesitás tener a mano:</p>
+            <ul style="margin-left:20px;color:var(--text-muted);font-size:0.9rem">
+              <li>Tu email SAP (el que usaste para registrarte en BTP)</li>
+              <li>Región: <code>eu10</code>, <code>us10</code>, etc.</li>
+              <li>Global Account Subdomain: visible en BTP Cockpit → Panel de cuenta</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step" onclick="toggleStep(3)">
+        <div class="step-line">
+          <div class="step-num done" id="sn3">✓</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-header">
+            <div class="step-title">Paso 3 — CF Login: Conectar Cloud Foundry</div>
+            <span class="badge badge-semi">Semi-auto</span>
+          </div>
+          <div class="step-detail" id="sd3">
+            <p style="margin-bottom:12px">Conecta el CF CLI al environment de Cloud Foundry de tu subaccount.</p>
+            <div class="callout callout-info">
+              <strong>💡 One-Time Passcode:</strong>
+              SAP CF usa SSO. Se genera un código temporal en el browser — tenés ~60 segundos para copiarlo y pegarlo antes de que expire.
+            </div>
+            <table>
+              <tr><th>Región</th><th>CF API Endpoint</th></tr>
+              <tr><td>eu10 (Frankfurt)</td><td><code>https://api.cf.eu10.hana.ondemand.com</code></td></tr>
+              <tr><td>us10 (US East)</td><td><code>https://api.cf.us10.hana.ondemand.com</code></td></tr>
+              <tr><td>ap10 (Australia)</td><td><code>https://api.cf.ap10.hana.ondemand.com</code></td></tr>
+              <tr><td>br10 (Brasil)</td><td><code>https://api.cf.br10.hana.ondemand.com</code></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step" onclick="toggleStep(4)">
+        <div class="step-line">
+          <div class="step-num done" id="sn4">✓</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-header">
+            <div class="step-title">Paso 4 — Setup: Crear Servicios en Cloud Foundry</div>
+            <span class="badge badge-auto">Automático</span>
+          </div>
+          <div class="step-detail" id="sd4">
+            <p style="margin-bottom:12px">Crea todos los servicios CF necesarios para tu aplicación.</p>
+            <table>
+              <tr><th>Servicio</th><th>Plan</th><th>Para qué sirve</th></tr>
+              <tr><td>xsuaa</td><td>application</td><td>Autenticación y autorización (OAuth2/OIDC)</td></tr>
+              <tr><td>destination</td><td>lite</td><td>Conexiones a backends (S/4HANA, APIs externas)</td></tr>
+              <tr><td>html5-apps-repo</td><td>app-host</td><td>Hosting de UI5/Fiori apps estáticas</td></tr>
+              <tr><td>html5-apps-repo</td><td>app-runtime</td><td>Serving del AppRouter (credenciales OAuth)</td></tr>
+              <tr><td>application-logs</td><td>lite</td><td>Logs centralizados en SAP Cloud</td></tr>
+            </table>
+            <div class="callout callout-info">
+              <strong>💡 Dry-run disponible:</strong>
+              El wizard muestra primero qué va a crear antes de ejecutar.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step" onclick="toggleStep(5)">
+        <div class="step-line">
+          <div class="step-num done" id="sn5">✓</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-header">
+            <div class="step-title">Paso 5 — Generate Project: Scaffold del Proyecto</div>
+            <span class="badge badge-auto">Automático</span>
+          </div>
+          <div class="step-detail" id="sd5">
+            <p style="margin-bottom:12px">Genera la estructura completa del proyecto CAP + SAPUI5 + AppRouter.</p>
+            <div class="code-block">
+              <pre><span class="comment"># Estructura generada:</span>
+my-btp-app/
+├── approuter/         <span class="comment"># AppRouter Node.js</span>
+├── app/my-btp-app/   <span class="comment"># SAPUI5 frontend</span>
+├── srv/               <span class="comment"># CAP backend</span>
+├── db/                <span class="comment"># Modelos de datos</span>
+├── mta.yaml           <span class="comment"># MTA build descriptor</span>
+├── xs-security.json   <span class="comment"># XSUAA config</span>
+└── package.json</pre>
+            </div>
+            <table>
+              <tr><th>Tipo</th><th>Stack</th><th>Cuándo usarlo</th></tr>
+              <tr><td><code>cap-ui5-approuter</code></td><td>CAP + UI5 + AppRouter</td><td>Full-stack con auth, base para producción</td></tr>
+              <tr><td><code>cap-ui5</code></td><td>CAP + UI5</td><td>Sin AppRouter, auth externa</td></tr>
+              <tr><td><code>cap-only</code></td><td>CAP Node.js</td><td>Solo backend API REST/OData</td></tr>
+              <tr><td><code>ui5-only</code></td><td>SAPUI5</td><td>Solo frontend Fiori</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="step" onclick="toggleStep(6)">
+        <div class="step-line">
+          <div class="step-num active" id="sn6">6</div>
+        </div>
+        <div class="step-body">
+          <div class="step-header">
+            <div class="step-title">Paso 6 — Deploy: Build y Deploy a Cloud Foundry</div>
+            <span class="badge badge-auto">Automático</span>
+          </div>
+          <div class="step-detail" id="sd6">
+            <p style="margin-bottom:12px">Compila el MTA archive y lo despliega a tu CF Space.</p>
+            <div class="callout callout-success">
+              <strong>🔧 4 Auto-repairs antes del build</strong>
+              Fix 1: elimina xsuaa-deployer. Fix 2: remueve deployed-after. Fix 3: npm-ci → npm. Fix 4: app-host → app-runtime para AppRouter.
+            </div>
+            <div class="code-block">
+              <pre><span class="comment"># Lo que ejecuta automáticamente:</span>
+<span class="prompt">$</span> <span class="cmd">mbt build</span>
+<span class="prompt">$</span> <span class="cmd">cf deploy mta_archives/my-btp-app_1.0.0.mtar</span></pre>
+            </div>
+            <div class="callout callout-info">
+              <strong>📍 ¿Dónde queda la app?</strong>
+              En Cloud Foundry, no en BAS. Podés verla en: BTP Cockpit → Subaccounts → CF → Spaces → tu space → Applications. O con <code>cf apps</code> en terminal.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION: DEV SETUP ═══════════ -->
+  <section id="devsetup" class="section">
+    <div class="card">
+      <h2>Setup del Entorno de Desarrollo</h2>
+    </div>
+
+    <div class="card">
+      <h3>Setup inicial</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        <pre><span class="prompt">$</span> <span class="cmd">git clone https://github.com/juanignaciopalom-lgtm/rma.git</span>
+<span class="prompt">$</span> <span class="cmd">cd rma/btp-starter-pack</span>
+<span class="prompt">$</span> <span class="cmd">npm install</span>
+<span class="prompt">$</span> <span class="cmd">cd ui && npm install && cd ..</span>
+<span class="prompt">$</span> <span class="cmd">cp .env.example .env</span></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Modo desarrollo (hot reload)</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        <pre><span class="comment"># Terminal 1: TypeScript watch mode</span>
+<span class="prompt">$</span> <span class="cmd">npm run build:watch</span>
+
+<span class="comment"># Terminal 2: Frontend Vite</span>
+<span class="prompt">$</span> <span class="cmd">cd ui && npm run dev</span>
+
+<span class="comment"># Terminal 3: Servidor backend</span>
+<span class="prompt">$</span> <span class="cmd">node dist/index.js ui</span></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Comandos de desarrollo</h3>
+      <table>
+        <tr><th>Comando</th><th>Qué hace</th></tr>
+        <tr><td><code>npm run build</code></td><td>Compila TypeScript → JavaScript (dist/)</td></tr>
+        <tr><td><code>npm run build:watch</code></td><td>Compilación continua</td></tr>
+        <tr><td><code>npm run build:ui</code></td><td>Build del frontend React (dist-ui/)</td></tr>
+        <tr><td><code>npm run build:all</code></td><td>Backend + frontend en un comando</td></tr>
+        <tr><td><code>npm test</code></td><td>Build + ejecuta suite de tests</td></tr>
+        <tr><td><code>npm run lint</code></td><td>ESLint sobre src/ y tests/</td></tr>
+        <tr><td><code>npm run format</code></td><td>Prettier sobre src/ y tests/</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Estructura del código fuente</h3>
+      <div class="code-block">
+        <pre>src/
+├── commands/           <span class="comment"># doctor, init, login, setup, validate, generate-project, deploy, ui</span>
+├── ui-server/          <span class="comment"># Express server + REST API + job manager + wizard state</span>
+├── templates/          <span class="comment"># mta-yaml, xs-security, CAP, UI5, AppRouter, renderer</span>
+├── btp/                <span class="comment"># Wrappers BTP CLI, CF CLI, catálogo de servicios</span>
+└── core/               <span class="comment"># config (Zod), logger (Winston), runner, platform, prompts</span>
+
+ui/src/
+├── components/         <span class="comment"># Step1Doctor → Step6Deploy, StepResetButton</span>
+└── App.tsx             <span class="comment"># Router + estado global wizard</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION: URLS & CONFIG ═══════════ -->
+  <section id="urls" class="section">
+    <div class="card">
+      <h2>URLs, Endpoints & Configuración</h2>
+    </div>
+
+    <div class="card">
+      <h3>URLs de la Aplicación</h3>
+      <div class="url-card">
+        <div class="url-icon">🖥️</div>
+        <div class="url-info">
+          <div class="url-label">Wizard UI (local)</div>
+          <a class="url-link" href="http://localhost:3001" target="_blank">http://localhost:3001</a>
+          <div class="url-desc">Interfaz principal. Se abre automáticamente con <code>npm run start:ui</code></div>
+        </div>
+      </div>
+      <div class="url-card">
+        <div class="url-icon">⚡</div>
+        <div class="url-info">
+          <div class="url-label">Vite Dev Server (desarrollo)</div>
+          <a class="url-link" href="http://localhost:5173" target="_blank">http://localhost:5173</a>
+          <div class="url-desc">Solo activo cuando corrés <code>cd ui && npm run dev</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>API REST del Servidor</h3>
+      <table>
+        <tr><th>Endpoint</th><th>Método</th><th>Descripción</th></tr>
+        <tr><td><code>/api/status</code></td><td>GET</td><td>Estado del wizard (pasos completados)</td></tr>
+        <tr><td><code>/api/steps/:id/run</code></td><td>POST</td><td>Ejecutar un paso del wizard</td></tr>
+        <tr><td><code>/api/steps/:id/reset</code></td><td>POST</td><td>Resetear un paso a pending</td></tr>
+        <tr><td><code>/api/jobs/:id</code></td><td>GET</td><td>Polling de resultado de un job async</td></tr>
+        <tr><td><code>/api/logs</code></td><td>GET</td><td>Últimas líneas del log file</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>URLs SAP BTP</h3>
+      <div class="url-card">
+        <div class="url-icon">🌐</div>
+        <div class="url-info">
+          <div class="url-label">SAP BTP Cockpit (Trial)</div>
+          <a class="url-link" href="https://account.hanatrial.ondemand.com/" target="_blank">https://account.hanatrial.ondemand.com/</a>
+          <div class="url-desc">Panel de control principal. Subaccounts, servicios, roles, subscripciones.</div>
+        </div>
+      </div>
+      <div class="url-card">
+        <div class="url-icon">🔧</div>
+        <div class="url-info">
+          <div class="url-label">SAP BTP CLI Download</div>
+          <a class="url-link" href="https://tools.hana.ondemand.com/#cloud" target="_blank">https://tools.hana.ondemand.com/#cloud</a>
+          <div class="url-desc">Descargar SAP BTP CLI (btp) para Windows/Mac/Linux.</div>
+        </div>
+      </div>
+      <div class="url-card">
+        <div class="url-icon">☁️</div>
+        <div class="url-info">
+          <div class="url-label">CF CLI Download</div>
+          <a class="url-link" href="https://github.com/cloudfoundry/cli/releases/latest" target="_blank">https://github.com/cloudfoundry/cli/releases/latest</a>
+          <div class="url-desc">Cloud Foundry CLI v8 — necesario para deploy y gestión de servicios.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>CF API Endpoints por región</h3>
+      <table>
+        <tr><th>Región</th><th>Código</th><th>CF API Endpoint</th></tr>
+        <tr><td>🇩🇪 Frankfurt</td><td>eu10</td><td><code>https://api.cf.eu10.hana.ondemand.com</code></td></tr>
+        <tr><td>🇳🇱 Países Bajos</td><td>eu20</td><td><code>https://api.cf.eu20.hana.ondemand.com</code></td></tr>
+        <tr><td>🇺🇸 US East</td><td>us10</td><td><code>https://api.cf.us10.hana.ondemand.com</code></td></tr>
+        <tr><td>🇧🇷 Brasil</td><td>br10</td><td><code>https://api.cf.br10.hana.ondemand.com</code></td></tr>
+        <tr><td>🇦🇺 Australia</td><td>ap10</td><td><code>https://api.cf.ap10.hana.ondemand.com</code></td></tr>
+        <tr><td>🇯🇵 Japón</td><td>jp10</td><td><code>https://api.cf.jp10.hana.ondemand.com</code></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION: TROUBLESHOOTING ═══════════ -->
+  <section id="troubleshoot" class="section">
+    <div class="card">
+      <h2>Troubleshooting por Paso</h2>
+      <p style="margin-top:8px">Errores posibles en cada uno de los 6 pasos del wizard. Hacé clic en cada problema para ver la solución.</p>
+    </div>
+
+    <!-- ── PASO 1: DOCTOR ── -->
+    <div class="card" style="margin-bottom:8px">
+      <h3>🩺 Paso 1 — Doctor</h3>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ <code>command not found</code> para Node, Git, CF CLI, BTP CLI, CDS, UI5 o MBT</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>La herramienta está instalada pero no está en el PATH del sistema, o no está instalada.</p>
+        <div class="code-block"><pre><span class="comment"># Verificar:</span>
+<span class="prompt">$</span> <span class="cmd">node --version</span>
+<span class="prompt">$</span> <span class="cmd">cf --version</span>
+<span class="prompt">$</span> <span class="cmd">btp --version</span>
+
+<span class="comment"># En Windows, después de instalar: cerrar y reabrir la terminal
+# Los cambios de PATH no se aplican a terminales ya abiertas
+
+# CF CLI — Mac:</span>
+<span class="prompt">$</span> <span class="cmd">brew install cloudfoundry/tap/cf-cli@8</span>
+<span class="comment"># Windows: Descargar installer de GitHub y reiniciar terminal</span>
+
+<span class="comment"># MBT, CDS, UI5:</span>
+<span class="prompt">$</span> <span class="cmd">npm install -g mbt @sap/cds-dk @ui5/cli</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ CF CLI detectado como v7 pero se requiere v8</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>SAP BTP requiere CF CLI v8. La v7 tiene diferencias de API que pueden causar errores.</p>
+        <div class="code-block"><pre><span class="comment"># Verificar versión:</span>
+<span class="prompt">$</span> <span class="cmd">cf --version</span>
+<span class="comment"># Si dice cf version 7.x.x, actualizá</span>
+
+<span class="comment"># Mac:</span>
+<span class="prompt">$</span> <span class="cmd">brew upgrade cf-cli@8</span>
+<span class="comment"># Windows: Desinstalar v7 desde Panel de Control, descargar v8 de GitHub</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ Doctor pasa pero luego falla en otro paso</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>Puede ser que el PATH del terminal donde corrés el wizard sea diferente al de tu sesión. Reiniciá la terminal o usá el wizard recién después de reiniciar.</p>
+        <div class="callout callout-warn">
+          <strong>⚠ Windows específico:</strong> Si instalaste herramientas con winget o un installer, siempre cerrá y reabrí PowerShell/CMD/Windows Terminal antes de correr el wizard.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PASO 2: BTP LOGIN ── -->
+    <div class="card" style="margin-bottom:8px;margin-top:20px">
+      <h3>🔐 Paso 2 — BTP Login</h3>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ El browser no se abre automáticamente</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>En algunos entornos corporativos o WSL, el comando <code>open</code> no funciona. El wizard imprime la URL en la consola.</p>
+        <div class="code-block"><pre><span class="comment"># Copiá la URL del output del wizard y abrila manualmente en tu browser
+# Ejemplo de URL:</span>
+https://cpcli.cf.eu10.hana.ondemand.com</pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ Error: "Global Account Subdomain inválido" o "subaccount not found"</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>El subdomain de tu Global Account BTP es diferente al que ingresaste. Para encontrarlo:</p>
+        <ol style="margin:10px 0 10px 20px;line-height:2;color:var(--text-muted);font-size:0.9rem">
+          <li>Abrir <a class="url-link" href="https://account.hanatrial.ondemand.com/" target="_blank">BTP Cockpit</a></li>
+          <li>Click en tu Global Account (Trial)</li>
+          <li>En la URL del browser: <code>https://account.hanatrial.ondemand.com/cockpit#/globalaccount/<strong>TU-SUBDOMAIN</strong></code></li>
+          <li>O en la vista de cuenta → sección "Global Account Information" → campo "Subdomain"</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ Error de autenticación OIDC / timeout en el browser</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>El flujo OIDC tiene un timeout. Si tardás en completar el login en el browser, la sesión expira.</p>
+        <ul style="margin:10px 0 10px 20px;color:var(--text-muted);font-size:0.9rem;line-height:1.8">
+          <li>Hacé clic en "Reset BTP Login" en el wizard para reintentar</li>
+          <li>Completá el login en el browser antes de cambiar de pestaña</li>
+          <li>Si usás MFA/2FA, tenelo activo antes de empezar</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ BTP CLI sesión expirada en pasos posteriores</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>Las sesiones de BTP CLI expiran (generalmente en horas). Si corrés el wizard en varios días, necesitás re-loguearte.</p>
+        <div class="code-block"><pre><span class="comment"># Verificar si la sesión está activa:</span>
+<span class="prompt">$</span> <span class="cmd">btp target</span>
+<span class="comment"># Si falla → usá "Reset BTP Login" en el wizard</span></pre></div>
+      </div>
+    </div>
+
+    <!-- ── PASO 3: CF LOGIN ── -->
+    <div class="card" style="margin-bottom:8px;margin-top:20px">
+      <h3>☁️ Paso 3 — CF Login</h3>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ One-Time Passcode expirado (SSO timeout)</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>El código SSO de Cloud Foundry expira en ~60 segundos. Si tardás en copiarlo y pegarlo, tenés que generar uno nuevo.</p>
+        <div class="callout callout-warn">
+          <strong>⚠ Tip crítico:</strong> Tenés el browser abierto y listo <em>antes</em> de hacer clic en "CF Login". Así copiás el código apenas aparece.
+        </div>
+        <p>Usá el botón "Reset CF Login" en el wizard para reintentar.</p>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ CF API endpoint incorrecto / "API endpoint not found"</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>El endpoint de CF depende de tu región BTP. Si tu subaccount está en <code>eu10</code> y usás el endpoint de <code>us10</code>, va a fallar.</p>
+        <div class="code-block"><pre><span class="comment"># Para encontrar tu endpoint correcto:
+# BTP Cockpit → tu Subaccount → Cloud Foundry → API Endpoint
+
+# eu10: </span>https://api.cf.eu10.hana.ondemand.com
+<span class="comment"># us10: </span>https://api.cf.us10.hana.ondemand.com</pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ <code>cf target</code> no muestra org/space después del login</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <div class="code-block"><pre><span class="comment"># Setear manualmente el target:</span>
+<span class="prompt">$</span> <span class="cmd">cf target -o "NombreDeOrg" -s "dev"</span>
+
+<span class="comment"># Listar orgs disponibles:</span>
+<span class="prompt">$</span> <span class="cmd">cf orgs</span>
+
+<span class="comment"># Listar spaces:</span>
+<span class="prompt">$</span> <span class="cmd">cf spaces</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ Error SSL / proxy corporativo bloquea CF API</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>En redes corporativas, el proxy o firewall puede bloquear las conexiones a SAP CF.</p>
+        <ul style="margin:10px 0 10px 20px;color:var(--text-muted);font-size:0.9rem;line-height:1.8">
+          <li>Verificar con tu equipo de IT si <code>*.hana.ondemand.com</code> está permitido</li>
+          <li>Configurar proxy en CF CLI: <code>export https_proxy=http://proxy:port</code></li>
+          <li>Para certificados SSL corporativos: <code>cf api --skip-ssl-validation</code> (solo para debugging, no producción)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── PASO 4: SETUP ── -->
+    <div class="card" style="margin-bottom:8px;margin-top:20px">
+      <h3>⚙️ Paso 4 — Setup (Crear Servicios CF)</h3>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ "Service plan not found" / servicio no disponible en la región</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>No todos los servicios SAP BTP están disponibles en todas las regiones. Esto es especialmente común en Trial.</p>
+        <div class="code-block"><pre><span class="comment"># Ver qué servicios están disponibles en tu región:</span>
+<span class="prompt">$</span> <span class="cmd">cf marketplace</span>
+
+<span class="comment"># Filtrar por nombre:</span>
+<span class="prompt">$</span> <span class="cmd">cf marketplace | grep xsuaa</span>
+<span class="prompt">$</span> <span class="cmd">cf marketplace | grep html5</span></pre></div>
+        <div class="callout callout-warn">
+          <strong>⚠ Si un servicio no aparece en cf marketplace:</strong>
+          No es posible crearlo en esa región. Puede requerirse habilitarlo desde BTP Cockpit → Entitlements.
+        </div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ Quota excedida en Trial / "Not enough resources"</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>SAP BTP Trial tiene límites de recursos. Si creaste servicios en intentos anteriores, pueden estar consumiendo quota.</p>
+        <div class="code-block"><pre><span class="comment"># Ver todos los servicios existentes:</span>
+<span class="prompt">$</span> <span class="cmd">cf services</span>
+
+<span class="comment"># Eliminar servicios que ya no necesitás:</span>
+<span class="prompt">$</span> <span class="cmd">cf delete-service nombre-del-servicio</span>
+
+<span class="comment"># Ver apps consumiendo recursos:</span>
+<span class="prompt">$</span> <span class="cmd">cf apps</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ "Instance with same name already exists"</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>El setup anterior dejó instancias de servicio con el mismo nombre.</p>
+        <div class="code-block"><pre><span class="comment"># Listar servicios:</span>
+<span class="prompt">$</span> <span class="cmd">cf services</span>
+
+<span class="comment"># Si el servicio existe y está bien, el setup puede saltearlo
+# Si está en error, eliminarlo y recrear:</span>
+<span class="prompt">$</span> <span class="cmd">cf delete-service nombre-existente</span>
+<span class="comment"># Luego retomar el setup desde el wizard</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ Servicio queda en estado "create in progress" por mucho tiempo</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>Algunos servicios tardan varios minutos en crearse. Es normal para xsuaa y html5-apps-repo.</p>
+        <div class="code-block"><pre><span class="comment"># Verificar estado de un servicio:</span>
+<span class="prompt">$</span> <span class="cmd">cf service nombre-del-servicio</span>
+<span class="comment"># "last operation: create in progress" → seguir esperando
+# "last operation: create succeeded" → listo
+# "last operation: create failed" → problema real</span></pre></div>
+      </div>
+    </div>
+
+    <!-- ── PASO 5: GENERATE PROJECT ── -->
+    <div class="card" style="margin-bottom:8px;margin-top:20px">
+      <h3>🏗️ Paso 5 — Generate Project</h3>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ El wizard se congela esperando confirmación (terminal colgada)</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <div class="callout callout-success">
+          <strong>✅ Resuelto en v1.1.0:</strong>
+          El wizard siempre pasa <code>--force</code> al generar desde la UI. No hay prompts interactivos que puedan colgar el proceso.
+        </div>
+        <p>Si estás en una versión anterior, actualizá con <code>git pull && npm run build:all</code>.</p>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ "Permission denied" al generar el proyecto (Windows)</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>Windows bloquea archivos que están siendo usados por otro proceso. Esto puede pasar si el editor tiene archivos del proyecto abiertos.</p>
+        <ul style="margin:10px 0 10px 20px;color:var(--text-muted);font-size:0.9rem;line-height:1.8">
+          <li>Cerrar VS Code u otros editores que tengan abierta la carpeta del proyecto</li>
+          <li>Usar un directorio de salida diferente (<code>--output ./mi-app-nueva</code>)</li>
+          <li>Correr PowerShell como Administrador si el problema persiste</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ El nombre del proyecto tiene espacios o caracteres especiales</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>Los nombres de proyecto deben cumplir restricciones de CF y npm: solo letras, números y guiones.</p>
+        <div class="callout callout-warn">
+          <strong>⚠ Restricciones de nombre:</strong>
+          Solo <code>a-z</code>, <code>0-9</code> y <code>-</code>. Sin espacios, sin mayúsculas al inicio, sin guiones bajos, sin caracteres especiales.
+        </div>
+        <p>✅ Válido: <code>my-btp-app</code>, <code>sales-tool-v2</code></p>
+        <p>❌ Inválido: <code>My App</code>, <code>sales_tool</code>, <code>app@2024</code></p>
+      </div>
+    </div>
+
+    <!-- ── PASO 6: DEPLOY ── -->
+    <div class="card" style="margin-bottom:8px;margin-top:20px">
+      <h3>🚀 Paso 6 — Deploy</h3>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ <code>VError: html5-repo-credentials: Missing required property: grant_type</code></span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <div class="callout callout-success">
+          <strong>✅ Auto-reparado en v1.1.0 (Fix 4)</strong>
+          La causa era usar el plan <code>app-host</code> del HTML5 App Repository para el AppRouter. Necesita <code>app-runtime</code>. El wizard lo detecta y corrige automáticamente antes del build.
+        </div>
+        <p>Si el error persiste, verificá que estás usando la versión más reciente.</p>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ <code>mbt build</code> falla con errores de npm</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <div class="callout callout-success">
+          <strong>✅ Fix 3 (npm-ci → npm) aplicado automáticamente</strong>
+        </div>
+        <p>Si aún así falla:</p>
+        <div class="code-block"><pre><span class="comment"># Instalar dependencias manualmente en cada módulo:</span>
+<span class="prompt">$</span> <span class="cmd">cd mi-app/srv && npm install && cd ../..</span>
+<span class="prompt">$</span> <span class="cmd">cd mi-app/approuter && npm install && cd ../..</span>
+
+<span class="comment"># Verificar MBT:</span>
+<span class="prompt">$</span> <span class="cmd">mbt --version</span>
+<span class="comment"># Si no está: npm install -g mbt</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ <code>cf deploy</code> falla con "service binding error"</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>El mta.yaml referencia un servicio CF que no existe o tiene un nombre diferente.</p>
+        <div class="code-block"><pre><span class="comment"># Ver servicios disponibles:</span>
+<span class="prompt">$</span> <span class="cmd">cf services</span>
+
+<span class="comment"># Los nombres en mta.yaml deben coincidir exactamente
+# Verificar en mta.yaml → sección resources → name</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ App queda en estado <code>crashed</code> después del deploy</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <div class="code-block"><pre><span class="comment"># Ver logs del crash:</span>
+<span class="prompt">$</span> <span class="cmd">cf logs mi-app-approuter --recent</span>
+<span class="prompt">$</span> <span class="cmd">cf logs mi-app-srv --recent</span>
+
+<span class="comment"># Causas comunes:
+# - Service binding faltante (ver "cf env mi-app-approuter")
+# - Error en xs-app.json del approuter
+# - Dependencias no instaladas (package.json incompleto)</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❌ Quota de disco/memoria excedida en Trial</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <p>SAP BTP Trial tiene límites de memoria y disco para apps.</p>
+        <div class="code-block"><pre><span class="comment"># Ver consumo de recursos:</span>
+<span class="prompt">$</span> <span class="cmd">cf apps</span>
+
+<span class="comment"># Detener apps que no se usan:</span>
+<span class="prompt">$</span> <span class="cmd">cf stop app-que-no-uso</span>
+
+<span class="comment"># O eliminar apps previas:</span>
+<span class="prompt">$</span> <span class="cmd">cf delete app-vieja</span></pre></div>
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <div class="trouble-q" onclick="toggleTrouble(this)">
+        <span>❓ ¿Dónde vive la app desplegada? No la veo en BAS Projects.</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="trouble-a">
+        <div class="callout callout-info">
+          <strong>BAS es el IDE — la app vive en Cloud Foundry.</strong>
+        </div>
+        <p>Para encontrarla: <strong>BTP Cockpit → tu Subaccount → Cloud Foundry → Spaces → tu Space → Applications</strong></p>
+        <p style="margin-top:8px">O desde terminal:</p>
+        <div class="code-block"><pre><span class="prompt">$</span> <span class="cmd">cf apps</span>
+<span class="prompt">$</span> <span class="cmd">cf app mi-app-approuter</span>
+<span class="comment"># La URL de la app aparece en el campo "routes"</span></pre></div>
+      </div>
+    </div>
+
+    <!-- ── REPORTE DE ERRORES ── -->
+    <div class="report-form">
+      <h3>🐛 ¿Encontraste un error no listado aquí?</h3>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:18px">
+        Cada reporte nos ayuda a mejorar la herramienta y a entrenar el futuro asistente de IA para diagnóstico automático.
+      </p>
+      <div class="form-field">
+        <label>Paso donde ocurrió el error</label>
+        <select id="report-step">
+          <option value="">Seleccioná el paso...</option>
+          <option value="1">Paso 1 — Doctor</option>
+          <option value="2">Paso 2 — BTP Login</option>
+          <option value="3">Paso 3 — CF Login</option>
+          <option value="4">Paso 4 — Setup</option>
+          <option value="5">Paso 5 — Generate Project</option>
+          <option value="6">Paso 6 — Deploy</option>
+          <option value="other">Otro</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Mensaje de error exacto</label>
+        <input type="text" id="report-error" placeholder="Copiá y pegá el mensaje de error..." />
+      </div>
+      <div class="form-field">
+        <label>¿Qué estabas haciendo cuando ocurrió?</label>
+        <textarea id="report-context" placeholder="Describí los pasos que realizaste antes del error..."></textarea>
+      </div>
+      <div class="form-field">
+        <label>Sistema operativo</label>
+        <select id="report-os">
+          <option value="">Seleccioná...</option>
+          <option value="windows">Windows 10/11</option>
+          <option value="mac">macOS</option>
+          <option value="linux">Linux</option>
+          <option value="wsl">WSL (Windows Subsystem for Linux)</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <button class="btn-purple" onclick="submitReport()">🐛 Abrir issue en GitHub</button>
+        <span id="report-msg" style="font-size:0.85rem;color:#56D364;display:none">✓ Se abrió GitHub con el reporte pre-completado — revisá la nueva pestaña.</span>
+      </div>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-top:10px">Se abrirá una nueva pestaña en GitHub con el reporte listo para enviar. Podés editarlo antes de confirmar.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION: CHECKLIST ═══════════ -->
+  <section id="checklist" class="section">
+    <div class="card">
+      <h2>Checklist de Validación Final</h2>
+      <p style="margin-top:8px">Marcá cada ítem para verificar que tu entorno está listo.</p>
+    </div>
+
+    <div class="card">
+      <h3>🩺 Dependencias locales</h3>
+      <ul class="checklist">
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text"><code>btp-starter-pack doctor</code> — todos los checks ✅</div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Node.js 18+ instalado: <code>node --version</code></div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">CF CLI v8 instalado: <code>cf --version</code></div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">BTP CLI instalado: <code>btp --version</code></div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">MBT instalado: <code>mbt --version</code></div></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>🔐 Autenticación</h3>
+      <ul class="checklist">
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">BTP CLI logueado: <code>btp target</code> muestra tu subaccount</div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">CF CLI logueado: <code>cf target</code> muestra org y space</div></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>☁️ Servicios CF creados</h3>
+      <ul class="checklist">
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text"><code>cf services</code> — xsuaa, destination, html5-app-host, html5-app-runtime ✅</div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Suscripción a BAS activa en Cockpit</div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Role Collection <code>Business_Application_Studio_Developer</code> asignada</div></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>🏗️ Proyecto generado y desplegado</h3>
+      <ul class="checklist">
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Proyecto generado sin errores</div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text"><code>mbt build</code> genera el .mtar sin errores</div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text"><code>cf deploy</code> exitoso — apps en estado <code>started</code></div></li>
+        <li><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">App accesible desde su URL en CF</div></li>
+      </ul>
+    </div>
+
+    <div class="callout callout-success" style="margin-top:20px">
+      <strong>🎉 ¡Todo chequeado!</strong>
+      Tenés una base de aplicación funcional desplegada en SAP BTP Cloud Foundry, lista para crecer.
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION: ROADMAP ═══════════ -->
+  <section id="roadmap" class="section">
+
+    <div class="card">
+      <h2>Roadmap & Futuras Features</h2>
+      <p style="margin-top:8px">Lo que viene — features planeadas y la visión a largo plazo del producto.</p>
+    </div>
+
+    <!-- FEATURES FUTURAS -->
+    <div class="card">
+      <h3>🔮 Features en Roadmap</h3>
+
+      <div class="future-card">
+        <h4>🤖 Asistente IA para Diagnóstico de Errores</h4>
+        <p style="margin-bottom:10px">Un LLM pequeño y especializado, entrenado exclusivamente con errores de SAP BTP, documentación de CF, CAP y SAPUI5. Cuando el wizard falla, el asistente analiza el error y sugiere la solución exacta — sin tener que googlear.</p>
+        <div style="margin-top:12px;padding:12px;background:var(--bg-dark);border-radius:8px;font-size:0.85rem">
+          <p style="color:#C9A0F8;font-weight:700;margin-bottom:6px">Arquitectura pensada:</p>
+          <ul style="margin-left:16px;color:var(--text-muted);line-height:2">
+            <li>Modelo base: <strong>Phi-3.5-mini o Llama-3.2-3B</strong> (3-7B params, corre en CPU)</li>
+            <li>Fine-tuning con LoRA sobre: docs SAP BTP, SAP Community, errores reportados por usuarios</li>
+            <li>Modo local via <strong>Ollama</strong> (sin internet, sin costo) para usuarios técnicos</li>
+            <li>Modo cloud via API (pay-per-use) para usuarios que prefieren comodidad</li>
+            <li>Los reportes de errores de usuarios → dataset de entrenamiento continuo (flywheel)</li>
+          </ul>
+        </div>
+        <span class="badge badge-future" style="margin-top:10px">Planned — Q3 2026</span>
+      </div>
+
+      <div class="future-card">
+        <h4>🔁 Reset por paso con re-validación automática</h4>
+        <p>Botón de reset en cada paso que no solo limpia el estado sino que re-valida el estado real del entorno (servicios CF existentes, sesiones activas, archivos generados) antes de permitir continuar.</p>
+        <span class="badge badge-future" style="margin-top:10px">Planned — v1.2.0</span>
+      </div>
+
+      <div class="future-card">
+        <h4>👥 Modo Equipo — Configuraciones compartidas</h4>
+        <p>Compartir una configuración de workspace BTP entre múltiples desarrolladores del mismo equipo. Un dev hace el setup una vez; el resto importa la configuración y empieza directo en el Paso 5.</p>
+        <span class="badge badge-future" style="margin-top:10px">Planned — v1.3.0</span>
+      </div>
+
+      <div class="future-card">
+        <h4>📊 Dashboard de estado del entorno</h4>
+        <p>Vista en tiempo real del estado de todos los servicios CF, apps desplegadas, quotas de Trial y alertas proactivas (ej: "tu Trial expira en 7 días").</p>
+        <span class="badge badge-future" style="margin-top:10px">Planned — v1.4.0</span>
+      </div>
+
+      <div class="future-card">
+        <h4>🏢 Soporte multi-subaccount</h4>
+        <p>Gestionar múltiples subaccounts BTP desde una sola interfaz — útil para consultoras que manejan proyectos de varios clientes simultáneamente.</p>
+        <span class="badge badge-future" style="margin-top:10px">Planned — v2.0.0</span>
+      </div>
+    </div>
+
+    <!-- AUTHOR -->
+    <div class="card">
+      <h3>Creado por</h3>
+      <div class="author-card">
+        <div class="author-avatar">👨‍💻</div>
+        <div>
+          <div class="author-name">Juan Ignacio Palomeque</div>
+          <div class="author-title">SAP Fullstack Developer Sr</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);margin-top:6px;line-height:1.6">
+            Especialista en SAP BTP, CAP framework, SAPUI5 y arquitecturas Cloud Foundry enterprise.<br/>
+            BTP Starter Pack nació de la frustración de repetir el mismo setup manual docenas de veces — y de la certeza de que ese tiempo se puede recuperar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /content -->
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer>
+  <p><strong>BTP Starter Pack</strong> v1.1.0 — por Juan Ignacio Palomeque · SAP Fullstack Developer Sr</p>
+  <p style="margin-top:6px">SAP, SAP BTP, Cloud Foundry, CAP, SAPUI5 son marcas registradas de SAP SE. Todos los derechos reservados sobre esta herramienta.</p>
+</footer>
+
+<script>
+  // ── Nav ──
+  const sectionLabels = {
+    overview:'Overview', quickstart:'Quick Start', wizard:'Wizard',
+    devsetup:'Dev Setup', urls:'URLs & Config', troubleshoot:'Troubleshooting',
+    checklist:'Checklist', roadmap:'Roadmap'
+  };
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => {
+      if (b.textContent.trim() === (sectionLabels[id] || id)) b.classList.add('active');
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  // ── Wizard Steps ──
+  function toggleStep(n) {
+    document.getElementById('sd' + n).classList.toggle('open');
+  }
+
+  // ── Troubleshoot accordion ──
+  function toggleTrouble(el) {
+    el.classList.toggle('open');
+    el.nextElementSibling.classList.toggle('open');
+  }
+
+  // ── Checklist ──
+  function toggleCheck(box) {
+    box.classList.toggle('checked');
+    box.nextElementSibling.classList.toggle('checked');
+    saveChecklist();
+  }
+  function saveChecklist() {
+    const state = Array.from(document.querySelectorAll('.check-box')).map(b => b.classList.contains('checked'));
+    try { localStorage.setItem('btp_checklist', JSON.stringify(state)); } catch(e) {}
+  }
+  function loadChecklist() {
+    try {
+      const state = JSON.parse(localStorage.getItem('btp_checklist') || '[]');
+      document.querySelectorAll('.check-box').forEach((b, i) => {
+        if (state[i]) { b.classList.add('checked'); b.nextElementSibling.classList.add('checked'); }
+      });
+    } catch(e) {}
+  }
+
+  // ── Copy code ──
+  function copyCode(btn) {
+    const pre = btn.parentElement.querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copiado';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
+  }
+
+  // ── Error report → abre un GitHub Issue pre-completado ──
+  const STEP_LABELS = {
+    '1': 'Paso 1 — Doctor',
+    '2': 'Paso 2 — BTP Login',
+    '3': 'Paso 3 — CF Login',
+    '4': 'Paso 4 — Setup',
+    '5': 'Paso 5 — Generate Project',
+    '6': 'Paso 6 — Deploy',
+    'other': 'Otro'
+  };
+  function submitReport() {
+    const step   = document.getElementById('report-step').value;
+    const error  = document.getElementById('report-error').value.trim();
+    const ctx    = document.getElementById('report-context').value.trim();
+    const os     = document.getElementById('report-os').value;
+    if (!step || !error) {
+      alert('Por favor completá al menos el paso y el mensaje de error.');
+      return;
+    }
+    const stepLabel = STEP_LABELS[step] || step;
+    const title = encodeURIComponent(`[Bug] ${stepLabel}: ${error.substring(0, 80)}`);
+    const body  = encodeURIComponent(
+`**Paso:** ${stepLabel}
+**Sistema operativo:** ${os || 'No especificado'}
+
+**Mensaje de error:**
+\`\`\`
+${error}
+\`\`\`
+
+**Contexto / pasos previos:**
+${ctx || 'No especificado'}
+
+---
+*Reportado desde el manual interactivo de BTP Starter Pack*`
+    );
+    const url = `https://github.com/juanignaciopalom-lgtm/rma/issues/new?title=${title}&body=${body}&labels=bug,btp-starter-pack`;
+    window.open(url, '_blank');
+    document.getElementById('report-step').value = '';
+    document.getElementById('report-error').value = '';
+    document.getElementById('report-context').value = '';
+    document.getElementById('report-os').value = '';
+    document.getElementById('report-msg').style.display = 'inline';
+    setTimeout(() => document.getElementById('report-msg').style.display = 'none', 6000);
+  }
+
+  // ── Init ──
+  window.addEventListener('DOMContentLoaded', () => {
+    loadChecklist();
+    document.getElementById('sd1').classList.add('open');
+    document.getElementById('sd6').classList.add('open');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BTP Starter Pack — El setup definitivo para SAP BTP Cloud Foundry</title>
+<meta name="description" content="Herramienta open source que automatiza el 80% del setup de SAP BTP Cloud Foundry. Wizard interactivo + manuales completos basados en documentación oficial SAP."/>
+<meta property="og:title" content="BTP Starter Pack — SAP BTP Cloud Foundry setup en minutos"/>
+<meta property="og:description" content="De 20 horas de configuración manual a 38 minutos. Wizard interactivo, auto-reparación de errores y manuales completos."/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<style>
+:root {
+  --bg: #0D1117;
+  --surface: #161B22;
+  --surface2: #1C2333;
+  --border: #30363D;
+  --blue: #0070F2;
+  --blue-light: #58A6FF;
+  --blue-dim: rgba(0,112,242,0.12);
+  --green: #107E3E;
+  --green-light: #56D364;
+  --green-dim: rgba(16,126,62,0.12);
+  --orange: #F0883E;
+  --orange-dim: rgba(240,136,62,0.12);
+  --red: #F85149;
+  --yellow: #E3B341;
+  --yellow-dim: rgba(227,179,65,0.12);
+  --text: #E6EDF3;
+  --muted: #8B949E;
+  --radius: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.65; }
+a { color: inherit; text-decoration: none; }
+
+/* ─── TOPBAR ─── */
+.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+.topbar-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px; color: var(--text); }
+.topbar-logo .dot { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #0070F2, #58A6FF); }
+.topbar-links { display: flex; gap: 6px; }
+.topbar-links a { padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--muted); transition: all .15s; }
+.topbar-links a:hover { color: var(--text); background: var(--surface2); }
+.topbar-links a.cta { background: var(--blue); color: #fff; }
+.topbar-links a.cta:hover { background: #0060d0; }
+
+/* ─── HERO ─── */
+.hero { position: relative; overflow: hidden; padding: 96px 24px 80px; text-align: center; background: linear-gradient(180deg, #080E1A 0%, #0D1117 100%); }
+.hero-glow { position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, rgba(0,112,242,0.18) 0%, transparent 70%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--blue-dim); border: 1px solid rgba(0,112,242,0.35); color: var(--blue-light); border-radius: 20px; padding: 5px 16px; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 24px; }
+.hero-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue-light); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.15; color: var(--text); max-width: 780px; margin: 0 auto 18px; letter-spacing: -0.5px; }
+.hero h1 em { font-style: normal; background: linear-gradient(90deg, #0070F2, #58A6FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-sub { color: var(--muted); font-size: 1.1rem; max-width: 560px; margin: 0 auto 36px; }
+.hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .15s; border: none; font-family: inherit; }
+.btn-primary { background: var(--blue); color: #fff; box-shadow: 0 4px 20px rgba(0,112,242,0.35); }
+.btn-primary:hover { background: #0060d0; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,112,242,0.45); }
+.btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--surface2); border-color: var(--blue-light); }
+.hero-stats { display: flex; justify-content: center; gap: 0; flex-wrap: wrap; max-width: 700px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.stat { flex: 1; min-width: 140px; padding: 20px 16px; text-align: center; border-right: 1px solid var(--border); }
+.stat:last-child { border-right: none; }
+.stat-n { font-size: 1.8rem; font-weight: 900; color: var(--blue-light); line-height: 1; }
+.stat-l { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.3px; margin-top: 4px; }
+
+/* ─── SECTION COMMONS ─── */
+.section { padding: 80px 24px; }
+.section-inner { max-width: 1080px; margin: 0 auto; }
+.section-tag { display: inline-block; background: var(--blue-dim); border: 1px solid rgba(0,112,242,0.3); color: var(--blue-light); border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 14px; }
+.section-title { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; color: var(--text); margin-bottom: 12px; line-height: 1.2; }
+.section-title span { color: var(--blue-light); }
+.section-desc { color: var(--muted); font-size: 1rem; max-width: 580px; margin-bottom: 48px; }
+
+/* ─── PAIN / BEFORE AFTER ─── */
+.pain-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+.pain-list { list-style: none; padding: 0; }
+.pain-list li { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: flex-start; font-size: 0.9rem; color: var(--muted); }
+.pain-list li:last-child { border-bottom: none; }
+.pain-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.before-after { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
+.ba-row { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.ba-row:last-child { margin-bottom: 0; }
+.ba-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; width: 60px; flex-shrink: 0; }
+.ba-bar-wrap { flex: 1; height: 34px; background: var(--bg); border-radius: 8px; overflow: hidden; position: relative; }
+.ba-bar { height: 100%; border-radius: 8px; display: flex; align-items: center; padding-left: 12px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.ba-before .ba-label { color: var(--red); }
+.ba-before .ba-bar { background: rgba(248,81,73,0.2); color: var(--red); width: 100%; }
+.ba-after .ba-label { color: var(--green-light); }
+.ba-after .ba-bar { background: rgba(86,211,100,0.2); color: var(--green-light); width: 32%; animation: grow .8s ease-out; }
+@keyframes grow { from { width: 0 } }
+
+/* ─── FEATURES ─── */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: border-color .2s, transform .2s; }
+.feature-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+.feature-icon { font-size: 28px; margin-bottom: 14px; }
+.feature-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.feature-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+
+/* ─── DELIVERABLES CARDS ─── */
+.deliverables { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.del-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.del-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; transition: border-color .2s; }
+.del-card:hover { border-color: var(--blue); }
+.del-card-header { padding: 24px 24px 16px; border-bottom: 1px solid var(--border); }
+.del-card-icon { font-size: 32px; margin-bottom: 12px; }
+.del-card-type { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; }
+.del-card-title { font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.del-card-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+.del-card-body { padding: 16px 24px; flex: 1; }
+.del-feature { display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.85rem; color: var(--muted); align-items: flex-start; }
+.del-feature-check { color: var(--green-light); flex-shrink: 0; margin-top: 1px; }
+.del-card-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+.del-btn { flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; border: none; font-family: inherit; }
+.del-btn-primary { background: var(--blue); color: #fff; }
+.del-btn-primary:hover { background: #0060d0; }
+.del-btn-secondary { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+.del-btn-secondary:hover { color: var(--text); border-color: var(--blue-light); }
+.del-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-bottom: 10px; }
+.tag-tool { background: var(--blue-dim); color: var(--blue-light); border: 1px solid rgba(0,112,242,0.3); }
+.tag-manual { background: var(--green-dim); color: var(--green-light); border: 1px solid rgba(16,126,62,0.3); }
+.tag-guide { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(227,179,65,0.3); }
+
+/* ─── INSTALL ─── */
+.install-section { background: linear-gradient(135deg, #080E1A 0%, #0D1117 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.install-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.prereq-list { list-style: none; padding: 0; margin-top: 16px; }
+.prereq-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface2); border-radius: 8px; margin-bottom: 8px; font-size: 0.875rem; }
+.prereq-name { color: var(--text); font-weight: 600; display: flex; gap: 10px; align-items: center; }
+.prereq-version { color: var(--muted); font-family: monospace; font-size: 12px; }
+.code-block { background: #0D1117; border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace; font-size: 13px; line-height: 1.8; overflow-x: auto; white-space: pre; position: relative; margin-top: 20px; }
+.comment { color: #6E7681; }
+.copy-fab { position: absolute; top: 12px; right: 12px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; font-family: inherit; }
+.copy-fab:hover { color: var(--text); }
+
+/* ─── TRUST ─── */
+.trust-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 32px; }
+.trust-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start; text-decoration: none; transition: border-color .2s; }
+.trust-card:hover { border-color: var(--blue); }
+.trust-icon { font-size: 22px; flex-shrink: 0; }
+.trust-title { font-size: 0.875rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.trust-url { font-size: 11px; color: var(--blue-light); }
+.trust-desc { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* ─── AUTHOR ─── */
+.author-section { text-align: center; padding: 64px 24px; }
+.author-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #0070F2, #58A6FF); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 18px; border: 3px solid rgba(0,112,242,0.3); }
+.author-name { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.author-role { color: var(--blue-light); font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
+.author-bio { color: var(--muted); font-size: 0.875rem; max-width: 480px; margin: 0 auto 20px; }
+.author-links { display: flex; gap: 12px; justify-content: center; }
+.author-link { padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; background: var(--surface); border: 1px solid var(--border); color: var(--muted); transition: all .15s; }
+.author-link:hover { color: var(--text); border-color: var(--blue-light); }
+
+/* ─── FOOTER ─── */
+footer { background: var(--surface); border-top: 1px solid var(--border); padding: 32px 40px; }
+.footer-inner { max-width: 1080px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.footer-brand { font-weight: 800; color: var(--text); font-size: 14px; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { color: var(--muted); font-size: 13px; transition: color .15s; }
+.footer-links a:hover { color: var(--text); }
+.footer-copy { color: var(--muted); font-size: 12px; text-align: center; margin-top: 16px; max-width: 1080px; margin: 16px auto 0; padding-top: 16px; border-top: 1px solid var(--border); }
+
+/* ─── AUTOMATION TABLE ─── */
+.auto-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin-top: 24px; }
+.auto-table th { background: var(--surface2); color: var(--text); font-weight: 700; padding: 10px 14px; text-align: left; border: 1px solid var(--border); }
+.auto-table td { padding: 9px 14px; border: 1px solid var(--border); color: var(--muted); }
+.auto-table tr:hover td { background: var(--surface2); }
+.badge-auto { color: var(--green-light); font-weight: 700; }
+.badge-semi { color: var(--yellow); font-weight: 700; }
+.badge-manual { color: var(--orange); font-weight: 700; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px) {
+  .topbar { padding: 0 16px; }
+  .topbar-links a:not(.cta) { display: none; }
+  .pain-grid, .install-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: column; }
+  .stat { border-right: none; border-bottom: 1px solid var(--border); }
+  .stat:last-child { border-bottom: none; }
+  footer { padding: 24px 16px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ TOPBAR ═══════════════════════ -->
+<nav class="topbar">
+  <div class="topbar-logo">
+    <div class="dot"></div>
+    BTP Starter Pack
+  </div>
+  <div class="topbar-links">
+    <a href="#recursos">Manuales</a>
+    <a href="#instalar">Instalación</a>
+    <a href="https://github.com/juanignaciopalom-lgtm/rma" target="_blank">GitHub</a>
+    <a href="manual.html" class="cta">Ver manual →</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    OPEN SOURCE · SAP BTP CLOUD FOUNDRY
+  </div>
+  <h1>El setup <em>definitivo</em> para<br/>SAP BTP Cloud Foundry</h1>
+  <p class="hero-sub">Dejá de perder horas configurando entornos SAP BTP desde cero. Wizard interactivo, auto-reparación de errores y documentación completa basada en fuentes oficiales SAP.</p>
+  <div class="hero-ctas">
+    <a href="#instalar" class="btn btn-primary">
+      ⚡ Instalar la herramienta
+    </a>
+    <a href="#recursos" class="btn btn-secondary">
+      📄 Ver los manuales
+    </a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">80%</div><div class="stat-l">Tareas automatizadas</div></div>
+    <div class="stat"><div class="stat-n">38min</div><div class="stat-l">vs. ~20h manual</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Auto-repairs incluidos</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">Credenciales guardadas</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ PAIN SECTION ═══════════════════════ -->
+<section class="section pain-section">
+  <div class="section-inner">
+    <div class="pain-grid">
+      <div>
+        <div class="section-tag">EL PROBLEMA</div>
+        <h2 class="section-title">¿Cuántas horas<br/><span>perdiste configurando SAP BTP?</span></h2>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:24px;">La configuración inicial de un entorno SAP BTP Cloud Foundry implica instalar herramientas, autenticarse con SSO, crear servicios en el orden correcto y lidiar con bugs conocidos que SAP no documenta claramente.</p>
+        <ul class="pain-list">
+          <li><span class="pain-icon">📚</span><span>Documentación SAP dispersa en múltiples portales y versiones</span></li>
+          <li><span class="pain-icon">🔗</span><span>Error <code>grant_type: missing</code> por AppRouter bindeado al plan incorrecto</span></li>
+          <li><span class="pain-icon">⏱️</span><span>Passcode SSO de CF expira en 60 segundos — sin aviso previo</span></li>
+          <li><span class="pain-icon">🔧</span><span><code>npm ci</code> rompe el build de MBT en ciertos entornos</span></li>
+          <li><span class="pain-icon">🔄</span><span>Dependencias circulares en <code>mta.yaml</code> que detienen el deploy</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="before-after">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:20px;">Tiempo de setup — Antes vs. Ahora</div>
+          <div class="ba-row ba-before">
+            <div class="ba-label">ANTES</div>
+            <div class="ba-bar-wrap">
+              <div class="ba-bar">~20 horas de trabajo manual</div>
+            </div>
+          </div>
+          <div style="height:10px;"></div>
+          <div class="ba-row ba-after">
+            <div class="ba-label">AHORA</div>
+            <div class="ba-bar-wrap">
+              <div class="ba-bar">~38 min</div>
+            </div>
+          </div>
+          <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);">
+            <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:12px;">Lo que automatizamos vs. lo que requiere el Cockpit SAP</div>
+            <table class="auto-table">
+              <tr><th>Acción</th><th>Estado</th></tr>
+              <tr><td>Verificar dependencias locales</td><td class="badge-auto">✅ Auto</td></tr>
+              <tr><td>Login BTP CLI + CF CLI</td><td class="badge-semi">⚠ Semi (OIDC SAP)</td></tr>
+              <tr><td>Crear servicios CF</td><td class="badge-auto">✅ Auto</td></tr>
+              <tr><td>Generar proyecto CAP + UI5</td><td class="badge-auto">✅ Auto</td></tr>
+              <tr><td>Build + Deploy con auto-repair</td><td class="badge-auto">✅ Auto</td></tr>
+              <tr><td>Suscribir BAS · Asignar roles</td><td class="badge-manual">⛔ Manual (SAP Trial)</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FEATURES ═══════════════════════ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-tag">QUÉ INCLUYE</div>
+    <h2 class="section-title">Todo lo que necesitás<br/><span>para arrancar con SAP BTP</span></h2>
+    <p class="section-desc">Una sola herramienta cubre el wizard de configuración, la generación del proyecto y el deploy. Más dos manuales detallados para que entiendas cada paso.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🧙</div>
+        <div class="feature-title">Wizard de 6 pasos</div>
+        <div class="feature-desc">Interfaz web paso a paso que guía desde la verificación de dependencias hasta el deploy completo. Estado persistente entre sesiones, con botón de reset por paso.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔧</div>
+        <div class="feature-title">4 Auto-repairs antes del deploy</div>
+        <div class="feature-desc">Detecta y corrige automáticamente los 4 bugs más comunes del <code>mta.yaml</code>: plan incorrecto del AppRouter, npm-ci, xsuaa-deployer y dependencias circulares.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">CLI completo</div>
+        <div class="feature-desc">Todos los comandos disponibles también por terminal: <code>doctor</code>, <code>init</code>, <code>login</code>, <code>setup</code>, <code>generate-project</code>, <code>deploy</code>. Integrable en pipelines CI/CD.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏗️</div>
+        <div class="feature-title">Generador de proyectos</div>
+        <div class="feature-desc">Genera proyectos CAP + SAPUI5 + AppRouter listos para evolucionar. Incluye <code>mta.yaml</code>, <code>xs-security.json</code>, estructura de carpetas y scripts de build.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-title">Seguridad by design</div>
+        <div class="feature-desc">Sin almacenamiento de credenciales. Autenticación 100% via OIDC browser. Validación de inputs contra command injection (CWE-78, CWE-88). Logs con sanitización de tokens.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <div class="feature-title">Documentación completa</div>
+        <div class="feature-desc">Dos manuales interactivos: uno para usar la herramienta y otro para hacer el proceso manual, ambos descargables en PDF. Basados en documentación oficial SAP.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ DELIVERABLES ═══════════════════════ -->
+<section class="section deliverables" id="recursos">
+  <div class="section-inner">
+    <div class="section-tag">LOS TRES RECURSOS</div>
+    <h2 class="section-title">Todo centralizado,<br/><span>todo disponible</span></h2>
+    <p class="section-desc">La herramienta de automatización y los dos manuales cubren tanto el camino rápido como el camino de aprendizaje profundo.</p>
+    <div class="del-grid">
+
+      <!-- CARD 1: TOOL -->
+      <div class="del-card">
+        <div class="del-card-header">
+          <div class="del-card-icon">⚡</div>
+          <div class="del-card-type">Herramienta CLI + Web</div>
+          <span class="del-tag tag-tool">CÓDIGO ABIERTO</span>
+          <div class="del-card-title">BTP Starter Pack</div>
+          <div class="del-card-desc">Wizard interactivo que automatiza el 80% del setup de SAP BTP Cloud Foundry. Desde la verificación de dependencias hasta el deploy.</div>
+        </div>
+        <div class="del-card-body">
+          <div class="del-feature"><span class="del-feature-check">✓</span> Wizard web en 6 pasos con estado persistente</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> CLI con 8 comandos (doctor, init, login, setup…)</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Generador de proyectos CAP + SAPUI5 + AppRouter</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> 4 auto-repairs del mta.yaml antes del deploy</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Node.js + TypeScript + React · Windows / Mac / Linux</div>
+        </div>
+        <div class="del-card-footer">
+          <a href="#instalar" class="del-btn del-btn-primary">⬇ Instalar</a>
+          <a href="https://github.com/juanignaciopalom-lgtm/rma" target="_blank" class="del-btn del-btn-secondary">GitHub →</a>
+        </div>
+      </div>
+
+      <!-- CARD 2: MANUAL HERRAMIENTA -->
+      <div class="del-card">
+        <div class="del-card-header">
+          <div class="del-card-icon">🧭</div>
+          <div class="del-card-type">Manual interactivo · HTML + PDF</div>
+          <span class="del-tag tag-manual">MANUAL DE USO</span>
+          <div class="del-card-title">Manual de BTP Starter Pack</div>
+          <div class="del-card-desc">Guía completa para usar la herramienta de principio a fin. Incluye troubleshooting por paso, checklist interactiva y formulario de reporte de errores.</div>
+        </div>
+        <div class="del-card-body">
+          <div class="del-feature"><span class="del-feature-check">✓</span> Qué es y qué automatiza la herramienta</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Instalación paso a paso (Windows, Mac, Linux)</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Uso del wizard web y modo CLI</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Troubleshooting de 20+ errores comunes</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Descargable en PDF · Checklist interactiva</div>
+        </div>
+        <div class="del-card-footer">
+          <a href="manual.html" class="del-btn del-btn-primary">📖 Abrir manual</a>
+        </div>
+      </div>
+
+      <!-- CARD 3: MANUAL CONFIGURACION -->
+      <div class="del-card">
+        <div class="del-card-header">
+          <div class="del-card-icon">📐</div>
+          <div class="del-card-type">Guía técnica · HTML + PDF</div>
+          <span class="del-tag tag-guide">CONFIGURACIÓN MANUAL</span>
+          <div class="del-card-title">Guía de Configuración Manual SAP BTP</div>
+          <div class="del-card-desc">Proceso completo para configurar SAP BTP sin ninguna herramienta. Basado en documentación oficial SAP. Para quienes quieren entender cada paso a fondo.</div>
+        </div>
+        <div class="del-card-body">
+          <div class="del-feature"><span class="del-feature-check">✓</span> 12 pasos desde cuenta Trial hasta primer deploy</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Comandos listos para copiar (Windows, Mac, Linux)</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> xs-security.json y mta.yaml completos</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> 15 errores con causa raíz y solución</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Basado en SAP Help, SAP Developers y SAP Community</div>
+        </div>
+        <div class="del-card-footer">
+          <a href="guia-manual.html" class="del-btn del-btn-primary">📐 Abrir guía</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ INSTALL ═══════════════════════ -->
+<section class="section install-section" id="instalar">
+  <div class="section-inner">
+    <div class="install-grid">
+      <div>
+        <div class="section-tag">INSTALACIÓN</div>
+        <h2 class="section-title">En marcha<br/><span>en 4 comandos</span></h2>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:8px;">Cloná el repositorio, instalá las dependencias, compilá y abrí el wizard. Todo lo demás lo hace la herramienta.</p>
+        <ul class="prereq-list">
+          <li><span class="prereq-name">🟢 Node.js</span><span class="prereq-version">18+ LTS</span></li>
+          <li><span class="prereq-name">☁️ CF CLI</span><span class="prereq-version">v8.x (no v7)</span></li>
+          <li><span class="prereq-name">🔑 SAP BTP CLI</span><span class="prereq-version">2.x</span></li>
+          <li><span class="prereq-name">📦 MBT</span><span class="prereq-version">1.2+</span></li>
+        </ul>
+        <p style="color:var(--muted);font-size:12px;margin-top:12px;">¿Faltan herramientas? El comando <code>doctor --fix</code> te guía para instalar cada una.</p>
+      </div>
+      <div>
+        <div class="code-block"><button class="copy-fab" onclick="copyInstall(this)">Copiar</button><span class="comment"># 1. Clonar el repositorio</span>
+git clone https://github.com/juanignaciopalom-lgtm/rma.git
+cd rma/btp-starter-pack
+
+<span class="comment"># 2. Instalar dependencias del backend</span>
+npm install
+
+<span class="comment"># 3. Compilar frontend</span>
+npm run build:ui
+
+<span class="comment"># 4. Compilar TypeScript → JavaScript</span>
+npm run build
+
+<span class="comment"># 5. Iniciar el wizard en tu máquina local</span>
+npm run start:ui
+<span class="comment"># → abre automáticamente el browser en http://localhost:3001</span></div>
+        <div style="margin-top:14px;padding:12px 14px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--blue-light);font-size:14px;">💡</span>
+          <span>El wizard verifica y guía la instalación de las herramientas SAP. Podés empezar con solo Node.js y Git.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ TRUST ═══════════════════════ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-tag">FUENTES VERIFICADAS</div>
+    <h2 class="section-title">Basado en<br/><span>documentación oficial SAP</span></h2>
+    <p class="section-desc">Toda la información de los manuales y el comportamiento de la herramienta fue verificado contra las fuentes primarias de SAP. Sin wikis de terceros ni blogs desactualizados.</p>
+    <div class="trust-grid">
+      <a class="trust-card" href="https://help.sap.com/docs/btp" target="_blank">
+        <div class="trust-icon">📖</div>
+        <div>
+          <div class="trust-title">SAP Help Portal</div>
+          <div class="trust-url">help.sap.com/docs/btp</div>
+          <div class="trust-desc">Documentación oficial SAP BTP — arquitectura, servicios y guías de administración</div>
+        </div>
+      </a>
+      <a class="trust-card" href="https://developers.sap.com" target="_blank">
+        <div class="trust-icon">👨‍💻</div>
+        <div>
+          <div class="trust-title">SAP Developers</div>
+          <div class="trust-url">developers.sap.com</div>
+          <div class="trust-desc">Tutoriales oficiales de CAP, SAPUI5, AppRouter y deploy en Cloud Foundry</div>
+        </div>
+      </a>
+      <a class="trust-card" href="https://cap.cloud.sap/docs/" target="_blank">
+        <div class="trust-icon">⚡</div>
+        <div>
+          <div class="trust-title">CAP Documentation</div>
+          <div class="trust-url">cap.cloud.sap/docs</div>
+          <div class="trust-desc">Referencia completa del Cloud Application Programming Model de SAP</div>
+        </div>
+      </a>
+      <a class="trust-card" href="https://community.sap.com" target="_blank">
+        <div class="trust-icon">👥</div>
+        <div>
+          <div class="trust-title">SAP Community</div>
+          <div class="trust-url">community.sap.com</div>
+          <div class="trust-desc">Fuente de errores conocidos y soluciones verificadas por la comunidad SAP global</div>
+        </div>
+      </a>
+      <a class="trust-card" href="https://github.com/cloudfoundry/cli" target="_blank">
+        <div class="trust-icon">☁️</div>
+        <div>
+          <div class="trust-title">Cloud Foundry CLI</div>
+          <div class="trust-url">github.com/cloudfoundry/cli</div>
+          <div class="trust-desc">Repositorio oficial del CF CLI — changelog y releases de v8</div>
+        </div>
+      </a>
+      <a class="trust-card" href="https://github.com/SAP/cloud-mta-build-tool" target="_blank">
+        <div class="trust-icon">🏗️</div>
+        <div>
+          <div class="trust-title">MTA Build Tool</div>
+          <div class="trust-url">github.com/SAP/cloud-mta-build-tool</div>
+          <div class="trust-desc">Repositorio oficial del MBT — documentación del mta.yaml y comportamiento del build</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ AUTHOR ═══════════════════════ -->
+<section class="author-section">
+  <div class="author-avatar">👨‍💻</div>
+  <div class="author-name">Juan Ignacio Palomeque</div>
+  <div class="author-role">SAP Fullstack Developer Sr</div>
+  <p class="author-bio">Especialista en SAP BTP, CAP framework, SAPUI5 y arquitecturas Cloud Foundry enterprise. BTP Starter Pack nació de configurar el mismo entorno demasiadas veces.</p>
+  <div class="author-links">
+    <a class="author-link" href="https://github.com/juanignaciopalom-lgtm" target="_blank">GitHub</a>
+    <a class="author-link" href="https://www.linkedin.com/in/" target="_blank">LinkedIn</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">⚡ BTP Starter Pack</div>
+    <div class="footer-links">
+      <a href="manual.html">Manual de uso</a>
+      <a href="guia-manual.html">Guía manual</a>
+      <a href="https://github.com/juanignaciopalom-lgtm/rma" target="_blank">GitHub</a>
+    </div>
+  </div>
+  <div class="footer-copy">
+    SAP, SAP BTP, Cloud Foundry, CAP y SAPUI5 son marcas registradas de SAP SE. · Creado por Juan Ignacio Palomeque.
+  </div>
+</footer>
+
+<script>
+function copyInstall(btn) {
+  const block = btn.parentElement;
+  const clone = block.cloneNode(true);
+  clone.querySelector('.copy-fab')?.remove();
+  const text = clone.innerText.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  });
+}
+
+// Smooth scroll offset para topbar fija
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) {
+      e.preventDefault();
+      const top = el.getBoundingClientRect().top + window.pageYOffset - 70;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>

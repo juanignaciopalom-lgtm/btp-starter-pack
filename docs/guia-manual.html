@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAP BTP — Manual de Configuración Manual Completo</title>
+<style>
+  :root {
+    --bg: #0D1117;
+    --surface: #161B22;
+    --surface2: #1C2333;
+    --border: #30363D;
+    --blue: #0070F2;
+    --blue-light: #58A6FF;
+    --blue-dim: rgba(0,112,242,0.12);
+    --green: #107E3E;
+    --green-light: #56D364;
+    --green-dim: rgba(16,126,62,0.12);
+    --orange: #F0883E;
+    --orange-dim: rgba(240,136,62,0.12);
+    --red: #F85149;
+    --red-dim: rgba(248,81,73,0.12);
+    --yellow: #E3B341;
+    --yellow-dim: rgba(227,179,65,0.12);
+    --text: #E6EDF3;
+    --muted: #8B949E;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.65; }
+
+  /* ─── HEADER ─── */
+  .hero { background: linear-gradient(135deg, #0A1628 0%, #0D1117 60%, #0A1628 100%); border-bottom: 1px solid var(--border); padding: 52px 40px 40px; text-align: center; }
+  .hero-badge { display: inline-block; background: var(--blue-dim); border: 1px solid rgba(0,112,242,0.35); color: var(--blue-light); border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 18px; }
+  .hero h1 { font-size: 2.3rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+  .hero h1 span { background: linear-gradient(90deg, #0070F2, #58A6FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { color: var(--muted); font-size: 1.05rem; max-width: 640px; margin: 0 auto 28px; }
+  .hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-top: 24px; }
+  .stat { text-align: center; }
+  .stat-n { font-size: 2rem; font-weight: 800; color: var(--blue-light); }
+  .stat-l { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
+  .hero-warning { max-width: 720px; margin: 24px auto 0; background: var(--orange-dim); border: 1px solid rgba(240,136,62,0.35); border-radius: var(--radius); padding: 14px 18px; color: var(--orange); font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+
+  /* ─── NAV ─── */
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; display: flex; justify-content: center; gap: 0; overflow-x: auto; position: sticky; top: 0; z-index: 100; }
+  nav a { display: block; padding: 14px 18px; color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; border-bottom: 2px solid transparent; transition: all .2s; }
+  nav a:hover { color: var(--text); }
+  nav a.active { color: var(--blue-light); border-bottom-color: var(--blue); }
+
+  /* ─── LAYOUT ─── */
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+  section { display: none; }
+  section.active { display: block; }
+
+  /* ─── STEP CARDS ─── */
+  .step-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 32px; overflow: hidden; }
+  .step-header { display: flex; align-items: center; gap: 16px; padding: 20px 24px; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+  .step-header:hover { background: var(--surface2); }
+  .step-num { width: 40px; height: 40px; border-radius: 50%; background: var(--blue-dim); border: 2px solid var(--blue); color: var(--blue-light); font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-title { flex: 1; }
+  .step-title h3 { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+  .step-title p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .step-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; flex-shrink: 0; }
+  .badge-manual { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(240,136,62,0.3); }
+  .badge-auto { background: var(--green-dim); color: var(--green-light); border: 1px solid rgba(16,126,62,0.3); }
+  .badge-semi { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(227,179,65,0.3); }
+  .step-chevron { color: var(--muted); transition: transform .3s; font-size: 18px; }
+  .step-card.open .step-chevron { transform: rotate(180deg); }
+  .step-body { display: none; padding: 24px; }
+  .step-card.open .step-body { display: block; }
+
+  /* ─── TYPOGRAPHY ─── */
+  h2.section-title { font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  h2.section-title span { color: var(--blue-light); }
+  .section-desc { color: var(--muted); margin-bottom: 28px; font-size: 0.95rem; }
+  h4 { font-size: 0.95rem; font-weight: 700; color: var(--text); margin: 20px 0 10px; }
+  p { color: var(--muted); font-size: 0.9rem; margin-bottom: 10px; }
+  ul, ol { padding-left: 20px; color: var(--muted); font-size: 0.9rem; }
+  ul li, ol li { margin-bottom: 6px; }
+  strong { color: var(--text); }
+  a { color: var(--blue-light); }
+
+  /* ─── CODE BLOCKS ─── */
+  .code-block { background: #0D1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace; font-size: 13px; line-height: 1.7; overflow-x: auto; margin: 12px 0; position: relative; white-space: pre; }
+  .code-block .comment { color: #6E7681; }
+  .code-block .cmd { color: #79C0FF; }
+  .code-block .str { color: #A5D6FF; }
+  .code-block .kw { color: #FF7B72; }
+  .code-btn-row { display: flex; gap: 6px; position: absolute; top: 10px; right: 10px; white-space: normal; }
+  .copy-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; font-family: -apple-system, sans-serif; }
+  .copy-btn:hover { color: var(--text); }
+  .dl-btn { background: var(--blue-dim); border: 1px solid rgba(0,112,242,0.3); color: var(--blue-light); border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; font-family: -apple-system, sans-serif; text-decoration: none; }
+
+  /* ─── CALLOUTS ─── */
+  .callout { border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.875rem; display: flex; gap: 12px; }
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .callout-body { flex: 1; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout.tip { background: var(--blue-dim); border: 1px solid rgba(0,112,242,0.3); color: #A8D4FF; }
+  .callout.warn { background: var(--orange-dim); border: 1px solid rgba(240,136,62,0.35); color: #FFBF80; }
+  .callout.danger { background: var(--red-dim); border: 1px solid rgba(248,81,73,0.3); color: #FFB3B0; }
+  .callout.success { background: var(--green-dim); border: 1px solid rgba(16,126,62,0.3); color: #9EE8B8; }
+
+  /* ─── TABLES ─── */
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 12px 0; }
+  th { background: var(--surface2); color: var(--text); font-weight: 700; padding: 10px 14px; text-align: left; border: 1px solid var(--border); }
+  td { padding: 9px 14px; border: 1px solid var(--border); color: var(--muted); }
+  tr:hover td { background: var(--surface2); }
+
+  /* ─── SUBSTEPS ─── */
+  .substep { display: flex; gap: 14px; margin-bottom: 18px; padding: 14px 16px; background: var(--surface2); border-radius: 8px; }
+  .substep-n { width: 26px; height: 26px; border-radius: 50%; background: var(--blue); color: white; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .substep-body { flex: 1; }
+  .substep-body strong { display: block; color: var(--text); font-size: 0.9rem; margin-bottom: 4px; }
+
+  /* ─── LINKS GRID ─── */
+  .links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin: 16px 0; }
+  .link-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; transition: border-color .2s; text-decoration: none; }
+  .link-card:hover { border-color: var(--blue); }
+  .link-card-icon { font-size: 22px; margin-bottom: 8px; }
+  .link-card-title { font-size: 0.875rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .link-card-url { font-size: 11px; color: var(--blue-light); word-break: break-all; }
+
+  /* ─── DIAGRAM ─── */
+  .diagram { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 16px 0; text-align: center; overflow-x: auto; }
+
+  /* ─── CHECKLIST ─── */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; background: var(--surface2); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: background .15s; font-size: 0.875rem; }
+  .checklist li:hover { background: #1E2940; }
+  .checklist li input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--blue); flex-shrink: 0; margin-top: 1px; cursor: pointer; }
+  .checklist li.checked { opacity: 0.55; text-decoration: line-through; }
+  .checklist li span { color: var(--muted); }
+
+  /* ─── TROUBLESHOOT ─── */
+  .error-item { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--red); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; }
+  .error-item:hover { border-left-color: var(--orange); }
+  .error-title { font-size: 0.875rem; font-weight: 700; color: var(--red); font-family: monospace; margin-bottom: 4px; }
+  .error-solution { font-size: 0.85rem; color: var(--muted); display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .error-item.open .error-solution { display: block; }
+
+  /* ─── PROGRESS ─── */
+  .progress-bar { width: 100%; height: 6px; background: var(--surface2); border-radius: 3px; margin: 8px 0 20px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 3px; transition: width .4s; }
+
+  /* ─── FOOTER ─── */
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 24px 40px; text-align: center; color: var(--muted); font-size: 12px; margin-top: 60px; }
+  footer a { color: var(--blue-light); }
+
+  @media(max-width:640px) {
+    .hero h1 { font-size: 1.5rem; }
+    .hero-stats { gap: 18px; }
+    nav { padding: 0 12px; }
+    .container { padding: 24px 14px; }
+  }
+
+  /* ─── PDF FLOAT BUTTON ─── */
+  .pdf-fab { position: fixed; bottom: 28px; right: 28px; z-index: 999; background: var(--blue); color: #fff; border: none; border-radius: 50px; padding: 12px 22px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 20px rgba(0,112,242,0.45); display: flex; align-items: center; gap: 8px; transition: transform .15s, box-shadow .15s; font-family: inherit; }
+  .pdf-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(0,112,242,0.55); }
+
+  /* ─── PRINT / PDF STYLES ─── */
+  @page {
+    size: A4;
+    margin: 1.4cm 1.2cm 1.4cm 1.2cm;
+    /* Suprimir encabezado y pie del browser en navegadores que lo soporten */
+    @top-center { content: none; }
+    @bottom-center { content: none; }
+    @top-left { content: none; }
+    @top-right { content: none; }
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+  }
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: #fff !important; color: #111 !important; font-size: 11pt; }
+    .pdf-fab, .copy-btn, .dl-btn, .code-btn-row, #print-modal { display: none !important; }
+    nav { display: none !important; }
+    footer { display: none !important; }
+    .hero { background: #0A1628 !important; padding: 24px !important; }
+    .hero h1, .hero-sub, .hero-badge, .hero-warning, .hero-stats { color: #fff !important; }
+    .container { max-width: 100% !important; padding: 12px !important; }
+    section { display: block !important; }
+    section h2.section-title { border-bottom: 2px solid #0070F2; padding-bottom: 6px; margin-bottom: 12px; page-break-after: avoid; }
+    .step-card { border: 1px solid #ccc !important; background: #fff !important; margin-bottom: 16px !important; break-inside: avoid; }
+    .step-body { display: block !important; padding: 12px !important; }
+    .step-header { background: #f5f5f5 !important; padding: 10px 14px !important; }
+    .step-header h3 { color: #111 !important; font-size: 12pt; }
+    .step-title p { color: #555 !important; }
+    .step-num { background: #0070F2 !important; color: #fff !important; border: none !important; }
+    .step-chevron { display: none; }
+    .step-badge { border: 1px solid #999 !important; }
+    .code-block { background: #1e1e1e !important; color: #d4d4d4 !important; border: 1px solid #555 !important; font-size: 9pt; line-height: 1.5; padding: 10px 12px !important; margin: 8px 0 !important; break-inside: avoid; white-space: pre-wrap !important; word-break: break-all; }
+    .code-block .comment { color: #6A9955 !important; }
+    .callout { break-inside: avoid; border: 1px solid #999 !important; background: #f9f9f9 !important; color: #333 !important; }
+    table { break-inside: avoid; font-size: 9pt; }
+    th { background: #0070F2 !important; color: #fff !important; }
+    td { color: #333 !important; border-color: #ddd !important; }
+    a { color: #0070F2 !important; }
+    .link-card { border: 1px solid #ddd !important; background: #fafafa !important; }
+    .link-card-title { color: #111 !important; }
+    .substep { background: #f5f5f5 !important; border-radius: 4px; }
+    .substep-n { background: #0070F2 !important; color: #fff !important; }
+    .substep-body strong { color: #111 !important; }
+    p, ul li, ol li, .error-solution { color: #444 !important; }
+    h4 { color: #111 !important; }
+    .error-item { break-inside: avoid; border-left: 3px solid #c00 !important; background: #fff9f9 !important; }
+    .error-title { color: #c00 !important; }
+    .error-solution { display: block !important; }
+    .checklist li { background: #f5f5f5 !important; break-inside: avoid; }
+    .checklist li span { color: #333 !important; }
+    .diagram { background: #fff !important; border: 1px solid #ccc !important; }
+    .progress-bar { background: #eee !important; }
+    .section-desc { color: #555 !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── PDF FLOATING BUTTON ─── -->
+<button class="pdf-fab" onclick="showPrintModal()" title="Descargar manual como PDF">
+  📄 Descargar PDF
+</button>
+
+<!-- ─── PRINT MODAL ─── -->
+<div id="print-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#161B22;border:1px solid #30363D;border-radius:16px;padding:32px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="font-size:32px;text-align:center;margin-bottom:12px;">📄</div>
+    <h3 style="color:#E6EDF3;font-size:1.1rem;text-align:center;margin-bottom:8px;">Guardar como PDF</h3>
+    <p style="color:#8B949E;font-size:0.875rem;text-align:center;margin-bottom:20px;">Para obtener un PDF limpio, seguí estos pasos en el diálogo que se va a abrir:</p>
+    <div style="background:#0D1117;border-radius:10px;padding:16px;margin-bottom:20px;">
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;">
+        <span style="background:#0070F2;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">1</span>
+        <span style="color:#C9D1D9;font-size:0.875rem;">En "Destino", elegí <strong style="color:#58A6FF;">Guardar como PDF</strong></span>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;">
+        <span style="background:#0070F2;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
+        <span style="color:#C9D1D9;font-size:0.875rem;">Abrí <strong style="color:#58A6FF;">"Más opciones"</strong> o <strong style="color:#58A6FF;">"Configuración avanzada"</strong></span>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span style="background:#0070F2;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">3</span>
+        <span style="color:#C9D1D9;font-size:0.875rem;">Desactivá la opción <strong style="color:#58A6FF;">"Encabezados y pies de página"</strong> (o "Headers and footers")</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="closePrintModal()" style="flex:1;background:#1C2333;border:1px solid #30363D;color:#8B949E;border-radius:8px;padding:10px;cursor:pointer;font-size:13px;font-family:inherit;">Cancelar</button>
+      <button onclick="executePrint()" style="flex:2;background:#0070F2;border:none;color:#fff;border-radius:8px;padding:10px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;">Abrir diálogo de impresión →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<div class="hero">
+  <div class="hero-badge">CONFIGURACIÓN MANUAL · SAP BTP CLOUD FOUNDRY</div>
+  <h1>SAP BTP — <span>Guía Completa</span> Paso a Paso</h1>
+  <p class="hero-sub">Desde cero hasta tu primer deploy en Cloud Foundry. Sin herramientas de automatización. Basado en documentación oficial SAP.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">12</div><div class="stat-l">Pasos cubiertos</div></div>
+    <div class="stat"><div class="stat-n">~4h</div><div class="stat-l">Tiempo estimado</div></div>
+    <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Basado en docs SAP</div></div>
+    <div class="stat"><div class="stat-n">Trial</div><div class="stat-l">Account gratuita</div></div>
+  </div>
+  <div class="hero-warning">
+    <span>⚠️</span>
+    <div><strong>Guía independiente de BTP Starter Pack.</strong> Este manual describe el proceso manual completo para entender cada paso y concepto. Si querés automatizar el 80% del proceso, usá BTP Starter Pack en lugar de seguir esta guía.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ NAV ═══════════════════════════════ -->
+<nav id="main-nav">
+  <a href="#" class="active" onclick="showSection('conceptos',this)">📚 Conceptos</a>
+  <a href="#" onclick="showSection('pasos',this)">🚀 Pasos</a>
+  <a href="#" onclick="showSection('proyecto',this)">🏗️ Proyecto</a>
+  <a href="#" onclick="showSection('deploy',this)">☁️ Deploy</a>
+  <a href="#" onclick="showSection('troubleshooting',this)">🔧 Troubleshooting</a>
+  <a href="#" onclick="showSection('checklist',this)">✅ Checklist</a>
+  <a href="#" onclick="showSection('recursos',this)">🔗 Recursos</a>
+</nav>
+
+<!-- ══════════════════════════ SECTION: CONCEPTOS ══════════════════════════ -->
+<div class="container">
+<section id="s-conceptos" class="active">
+  <h2 class="section-title">📚 Conceptos <span>Clave</span></h2>
+  <p class="section-desc">Entendé la arquitectura de SAP BTP antes de empezar. Esta sección es fundamental para no perderse en los pasos siguientes.</p>
+
+  <!-- Diagrama de arquitectura -->
+  <div class="diagram">
+    <svg viewBox="0 0 860 420" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" style="max-width:100%;height:auto;">
+      <defs>
+        <linearGradient id="cg1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0070F2"/><stop offset="100%" stop-color="#58A6FF"/></linearGradient>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#58A6FF" opacity=".7"/></marker>
+      </defs>
+      <!-- Global Account -->
+      <rect x="10" y="10" width="840" height="400" rx="14" fill="none" stroke="#30363D" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="30" y="34" fill="#8B949E" font-size="11" font-weight="700" letter-spacing="1">GLOBAL ACCOUNT (Trial)</text>
+
+      <!-- Subaccount -->
+      <rect x="30" y="50" width="800" height="340" rx="12" fill="none" stroke="#0070F2" stroke-opacity=".35" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="50" y="72" fill="#58A6FF" font-size="11" font-weight="700" letter-spacing="1">SUBACCOUNT (Trial)</text>
+
+      <!-- CF Environment -->
+      <rect x="50" y="86" width="760" height="280" rx="10" fill="rgba(0,112,242,0.06)" stroke="#0070F2" stroke-opacity=".2" stroke-width="1"/>
+      <text x="70" y="108" fill="#58A6FF" font-size="10" font-weight="700" letter-spacing="1">CLOUD FOUNDRY ENVIRONMENT</text>
+
+      <!-- Org -->
+      <rect x="70" y="118" width="720" height="230" rx="8" fill="none" stroke="#30363D" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="90" y="138" fill="#8B949E" font-size="10" letter-spacing=".8">ORG: trialXXXXXXXXXtrial</text>
+
+      <!-- Space -->
+      <rect x="90" y="148" width="680" height="185" rx="8" fill="rgba(16,126,62,0.06)" stroke="#107E3E" stroke-opacity=".4" stroke-width="1.5"/>
+      <text x="110" y="168" fill="#56D364" font-size="10" font-weight="700" letter-spacing=".8">SPACE: dev</text>
+
+      <!-- Services box -->
+      <rect x="110" y="178" width="280" height="140" rx="8" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+      <text x="250" y="198" text-anchor="middle" fill="#8B949E" font-size="10" font-weight="700">SERVICIOS CF</text>
+      <text x="130" y="220" fill="#56D364" font-size="12">🛡️</text><text x="152" y="221" fill="#E6EDF3" font-size="11">xsuaa (application)</text>
+      <text x="130" y="240" fill="#56D364" font-size="12">🔗</text><text x="152" y="241" fill="#E6EDF3" font-size="11">destination (lite)</text>
+      <text x="130" y="260" fill="#56D364" font-size="12">📦</text><text x="152" y="261" fill="#E6EDF3" font-size="11">html5-apps-repo/app-host</text>
+      <text x="130" y="280" fill="#56D364" font-size="12">🌐</text><text x="152" y="281" fill="#E6EDF3" font-size="11">html5-apps-repo/app-runtime</text>
+      <text x="130" y="300" fill="#56D364" font-size="12">📊</text><text x="152" y="301" fill="#E6EDF3" font-size="11">application-logs (lite)</text>
+
+      <!-- Apps box -->
+      <rect x="410" y="178" width="340" height="140" rx="8" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+      <text x="580" y="198" text-anchor="middle" fill="#8B949E" font-size="10" font-weight="700">APPS DEPLOYADAS</text>
+      <text x="430" y="220" fill="#58A6FF" font-size="12">⚡</text><text x="452" y="221" fill="#E6EDF3" font-size="11">my-app-approuter (nodejs)</text>
+      <text x="430" y="242" fill="#58A6FF" font-size="12">🖥️</text><text x="452" y="243" fill="#E6EDF3" font-size="11">my-app-ui-deployer (content)</text>
+      <text x="430" y="264" fill="#58A6FF" font-size="12">🔌</text><text x="452" y="265" fill="#E6EDF3" font-size="11">my-app-srv (nodejs / CAP)</text>
+      <text x="430" y="286" fill="#58A6FF" font-size="12">🗄️</text><text x="452" y="287" fill="#E6EDF3" font-size="11">my-app-db-deployer (hdi)</text>
+
+      <!-- Arrow -->
+      <line x1="390" y1="248" x2="410" y2="248" stroke="#58A6FF" stroke-width="1.5" opacity=".5" marker-end="url(#arr)"/>
+      <text x="400" y="242" text-anchor="middle" fill="#8B949E" font-size="9">bind</text>
+
+      <!-- BAS note -->
+      <rect x="110" y="328" width="620" height="28" rx="6" fill="rgba(0,112,242,0.08)" stroke="rgba(0,112,242,0.2)" stroke-width="1"/>
+      <text x="420" y="347" text-anchor="middle" fill="#58A6FF" font-size="11">SAP Business Application Studio — suscripción desde Service Marketplace del Cockpit</text>
+    </svg>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;">Arquitectura de un entorno SAP BTP Cloud Foundry Trial completo</p>
+  </div>
+
+  <h4>Glosario de términos SAP BTP</h4>
+  <table>
+    <tr><th>Término</th><th>Qué es</th></tr>
+    <tr><td><strong>Global Account</strong></td><td>El contenedor raíz de tu entorno SAP BTP. Tiene créditos y servicios globales asignados.</td></tr>
+    <tr><td><strong>Subaccount</strong></td><td>División lógica dentro del Global Account. Cada subaccount tiene su propio environment (CF, Kyma, etc.).</td></tr>
+    <tr><td><strong>Cloud Foundry (CF)</strong></td><td>El environment de ejecución de apps. Similar a Heroku o Render pero enterprise.</td></tr>
+    <tr><td><strong>CF Org</strong></td><td>Agrupación lógica dentro de CF. En Trial se crea una sola automáticamente.</td></tr>
+    <tr><td><strong>CF Space</strong></td><td>Entorno de trabajo dentro de una Org. Donde viven los servicios y las apps.</td></tr>
+    <tr><td><strong>BTP CLI</strong></td><td>CLI para administrar global accounts, subaccounts y entitlements de SAP BTP.</td></tr>
+    <tr><td><strong>CF CLI</strong></td><td>CLI para gestionar apps, servicios y espacios dentro de Cloud Foundry.</td></tr>
+    <tr><td><strong>XSUAA</strong></td><td>Extended Services for User Account and Authentication. Proveedor OAuth2/OIDC de SAP. Maneja la autenticación de las apps.</td></tr>
+    <tr><td><strong>MTA / mtar</strong></td><td>Multi-Target Application. El formato de paquete que agrupa todas las partes de una app BTP para deployar.</td></tr>
+    <tr><td><strong>mta.yaml</strong></td><td>El descriptor del MTA. Define módulos (apps), recursos (servicios) y sus relaciones.</td></tr>
+    <tr><td><strong>AppRouter</strong></td><td>Proxy inverso de SAP. Maneja la autenticación, sesiones y enrutamiento hacia el backend y frontend.</td></tr>
+    <tr><td><strong>CAP</strong></td><td>Cloud Application Programming model. Framework Node.js de SAP para backends OData/REST.</td></tr>
+    <tr><td><strong>SAPUI5 / Fiori</strong></td><td>Framework frontend de SAP. Fiori es el sistema de diseño, UI5 es la librería.</td></tr>
+    <tr><td><strong>BAS</strong></td><td>SAP Business Application Studio. IDE en la nube de SAP (alternativa cloud a VS Code).</td></tr>
+    <tr><td><strong>MBT</strong></td><td>MTA Build Tool. Compila el mta.yaml y todos los módulos en un archivo .mtar deployable.</td></tr>
+    <tr><td><strong>xs-security.json</strong></td><td>Configuración del scope de XSUAA: roles, scopes y cómo se autentica la app.</td></tr>
+    <tr><td><strong>html5-apps-repo</strong></td><td>Servicio de hosting de contenido estático (UI5/React) en BTP. Tiene dos planes: app-host y app-runtime.</td></tr>
+    <tr><td><strong>Entitlement</strong></td><td>El permiso para usar un servicio en tu subaccount. En Trial vienen preconfigurados.</td></tr>
+  </table>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div class="callout-body">
+      <strong>Flujo general resumido</strong>
+      Global Account → Subaccount → Activar CF Environment → Crear Space → Crear Servicios → Desarrollar App → Build con MBT → Deploy con CF CLI → Verificar
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SECTION: PASOS ══════════════════════════ -->
+<section id="s-pasos">
+  <h2 class="section-title">🚀 <span>Pasos</span> de Configuración</h2>
+  <p class="section-desc">Seguí cada paso en orden. Cada uno tiene una estimación de tiempo y clasificación: <span style="color:var(--orange)">Manual</span> (requiere el Cockpit web), <span style="color:var(--yellow)">Semi-manual</span> (CLI con pasos en browser), <span style="color:var(--green-light)">CLI</span> (todo por terminal).</p>
+
+  <!-- ────── PASO 1: CUENTA TRIAL ────── -->
+  <div class="step-card open" id="step1">
+    <div class="step-header" onclick="toggleStep('step1')">
+      <div class="step-num">1</div>
+      <div class="step-title">
+        <h3>Crear cuenta SAP BTP Trial</h3>
+        <p>Registro gratuito en account.hanatrial.ondemand.com · ~15 min</p>
+      </div>
+      <span class="step-badge badge-manual">🖱 Manual · Cockpit</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="callout success">
+        <span class="callout-icon">✅</span>
+        <div class="callout-body">La cuenta Trial de SAP BTP es <strong>completamente gratuita</strong> y no requiere tarjeta de crédito. Dura 90 días y se puede renovar.</div>
+      </div>
+
+      <div class="substep">
+        <div class="substep-n">1</div>
+        <div class="substep-body">
+          <strong>Ir al portal de registro</strong>
+          <p>Abrí <a href="https://account.hanatrial.ondemand.com/" target="_blank">https://account.hanatrial.ondemand.com/</a> en tu browser.</p>
+        </div>
+      </div>
+
+      <div class="substep">
+        <div class="substep-n">2</div>
+        <div class="substep-body">
+          <strong>Crear cuenta SAP Universal ID</strong>
+          <p>Hacé clic en <strong>"Log On"</strong> y luego en <strong>"Register"</strong>. Completá el formulario con email, nombre y contraseña. Vas a recibir un email de verificación — confirmalo antes de continuar.</p>
+          <p>Link directo al registro: <a href="https://account.hanatrial.ondemand.com/register" target="_blank">https://account.hanatrial.ondemand.com/register</a></p>
+        </div>
+      </div>
+
+      <div class="substep">
+        <div class="substep-n">3</div>
+        <div class="substep-body">
+          <strong>Seleccionar región del Trial</strong>
+          <p>Después del login, el wizard de SAP te va a pedir elegir una región. Las más comunes son:</p>
+          <table>
+            <tr><th>Región</th><th>Código</th><th>Recomendada para</th></tr>
+            <tr><td>Europe (Frankfurt)</td><td>eu10</td><td>Europa y Latinoamérica ✅</td></tr>
+            <tr><td>US East (VA)</td><td>us10</td><td>Norteamérica</td></tr>
+            <tr><td>Singapore</td><td>ap21</td><td>Asia-Pacífico</td></tr>
+          </table>
+          <div class="callout warn"><span class="callout-icon">⚠️</span><div class="callout-body">Una vez elegida la región <strong>no se puede cambiar</strong>. Elegí eu10 si no tenés preferencia específica.</div></div>
+        </div>
+      </div>
+
+      <div class="substep">
+        <div class="substep-n">4</div>
+        <div class="substep-body">
+          <strong>Acceder al Cockpit</strong>
+          <p>Después del wizard llegás al <strong>SAP BTP Cockpit</strong>. Tu URL va a ser similar a:</p>
+          <div class="code-block">https://cockpit.eu10.hana.ondemand.com/cockpit/#/globalaccount/XXXXXXXX/subaccount/YYYYYYYY</div>
+          <p>Guardá esta URL — es tu punto de entrada al dashboard de administración.</p>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">📌</span>
+        <div class="callout-body"><strong>Datos que necesitás guardar después de este paso:</strong> tu email de SAP, la región elegida (ej: eu10), y el subdomain de tu global account (visible en el Cockpit).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────── PASO 2: ACTIVAR CF ENVIRONMENT ────── -->
+  <div class="step-card" id="step2">
+    <div class="step-header" onclick="toggleStep('step2')">
+      <div class="step-num">2</div>
+      <div class="step-title">
+        <h3>Activar Cloud Foundry Environment</h3>
+        <p>Habilitar CF en tu subaccount Trial · ~10 min</p>
+      </div>
+      <span class="step-badge badge-manual">🖱 Manual · Cockpit</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="substep">
+        <div class="substep-n">1</div>
+        <div class="substep-body">
+          <strong>Ir a tu Subaccount</strong>
+          <p>En el Cockpit, hacé clic en <strong>"trial"</strong> en la lista de subaccounts. Este es el subaccount Trial preconfigurado por SAP.</p>
+        </div>
+      </div>
+      <div class="substep">
+        <div class="substep-n">2</div>
+        <div class="substep-body">
+          <strong>Ir a Cloud Foundry Environment</strong>
+          <p>En el menú izquierdo → <strong>Cloud Foundry</strong> → <strong>Spaces</strong>. Si no está activado, vas a ver un botón <strong>"Enable Cloud Foundry"</strong>.</p>
+        </div>
+      </div>
+      <div class="substep">
+        <div class="substep-n">3</div>
+        <div class="substep-body">
+          <strong>Habilitar CF</strong>
+          <p>Hacé clic en <strong>"Enable Cloud Foundry"</strong>. Dejá los valores por defecto:</p>
+          <ul>
+            <li><strong>Plan:</strong> standard</li>
+            <li><strong>Org name:</strong> se asigna automáticamente (ej: <code>trial12345trial</code>)</li>
+          </ul>
+          <p>Hacé clic en <strong>"Create"</strong>. Espera 1-2 minutos a que finalice.</p>
+        </div>
+      </div>
+      <div class="substep">
+        <div class="substep-n">4</div>
+        <div class="substep-body">
+          <strong>Anotar el API Endpoint de CF</strong>
+          <p>Una vez habilitado, vas a ver el <strong>API Endpoint</strong>. Tiene el formato:</p>
+          <div class="code-block">https://api.cf.eu10.hana.ondemand.com</div>
+          <p>Guardalo — lo vas a necesitar para hacer login con CF CLI.</p>
+        </div>
+      </div>
+      <div class="substep">
+        <div class="substep-n">5</div>
+        <div class="substep-body">
+          <strong>Crear el CF Space</strong>
+          <p>Hacé clic en <strong>"Create Space"</strong>. Nombre sugerido: <code>dev</code>. Dejá los roles por defecto y confirmá.</p>
+          <div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body">También podés crear el Space desde CLI en el Paso 5. Hacerlo desde el Cockpit es más simple para el primer setup.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────── PASO 3: INSTALAR HERRAMIENTAS ────── -->
+  <div class="step-card" id="step3">
+    <div class="step-header" onclick="toggleStep('step3')">
+      <div class="step-num">3</div>
+      <div class="step-title">
+        <h3>Instalar herramientas locales</h3>
+        <p>Node.js, CF CLI v8, BTP CLI, CDS, UI5 CLI, MBT · ~30 min</p>
+      </div>
+      <span class="step-badge badge-auto">💻 CLI / Local</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-body"><strong>CF CLI debe ser v8.x — NO v7.</strong> SAP requiere v8 para comandos modernos de MTA y versionado de manifests. Verificá siempre con <code>cf version</code>.</div>
+      </div>
+
+      <h4>Resumen de herramientas requeridas</h4>
+      <table>
+        <tr><th>Herramienta</th><th>Versión</th><th>Para qué se usa</th></tr>
+        <tr><td><strong>Node.js</strong></td><td>18+ LTS</td><td>Runtime base — necesario para todas las CLIs npm</td></tr>
+        <tr><td><strong>Git</strong></td><td>2.x</td><td>Control de versiones del proyecto</td></tr>
+        <tr><td><strong>CF CLI v8</strong></td><td>8.x</td><td>Deploy de apps y gestión de servicios en Cloud Foundry</td></tr>
+        <tr><td><strong>SAP BTP CLI</strong></td><td>2.x</td><td>Gestión de global accounts, subaccounts y entitlements</td></tr>
+        <tr><td><strong>SAP CDS CLI</strong></td><td>7+</td><td>Scaffolding y desarrollo de proyectos CAP</td></tr>
+        <tr><td><strong>UI5 CLI</strong></td><td>3+</td><td>Build de proyectos SAPUI5</td></tr>
+        <tr><td><strong>MBT</strong></td><td>1.2+</td><td>Compilar el mta.yaml en .mtar deployable</td></tr>
+        <tr><td><strong>cf deploy plugin</strong></td><td>latest</td><td>Plugin CF CLI para deployar archivos .mtar</td></tr>
+      </table>
+
+      <h4>🪟 Windows</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># 1. Node.js LTS</span>
+winget install OpenJS.NodeJS.LTS
+
+<span class="comment"># 2. Git</span>
+winget install Git.Git
+
+<span class="comment"># 3. CF CLI v8 — descargar el instalador .exe desde:</span>
+<span class="comment"># https://github.com/cloudfoundry/cli/releases/latest</span>
+<span class="comment"># Buscar: cf8-installer_X.Y.Z_windows_x86-64.zip</span>
+
+<span class="comment"># 4. BTP CLI — descargar desde SAP Tools:</span>
+<span class="comment"># https://tools.hana.ondemand.com/#cloud</span>
+<span class="comment"># Sección: "SAP BTP command line interface (btp CLI)"</span>
+
+<span class="comment"># 5. Herramientas npm (en terminal como Admin)</span>
+npm install -g @sap/cds-dk
+npm install -g @ui5/cli
+npm install -g mbt</div>
+
+      <h4>🍎 macOS</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># 1. Homebrew (si no lo tenés)</span>
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+<span class="comment"># 2. Node.js LTS</span>
+brew install node@18
+echo 'export PATH="/opt/homebrew/opt/node@18/bin:$PATH"' >> ~/.zshrc
+
+<span class="comment"># 3. Git</span>
+brew install git
+
+<span class="comment"># 4. CF CLI v8</span>
+brew install cloudfoundry/tap/cf-cli@8
+
+<span class="comment"># 5. BTP CLI — descargar desde:</span>
+<span class="comment"># https://tools.hana.ondemand.com/#cloud</span>
+<span class="comment"># Sección: "SAP BTP command line interface" → macOS</span>
+
+<span class="comment"># 6. Herramientas npm</span>
+npm install -g @sap/cds-dk
+npm install -g @ui5/cli
+npm install -g mbt</div>
+
+      <h4>🐧 Linux (Ubuntu/Debian)</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># 1. Node.js 18 LTS</span>
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+<span class="comment"># 2. CF CLI v8</span>
+wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+sudo apt-get update
+sudo apt-get install cf8-cli
+
+<span class="comment"># 3. BTP CLI — descargar tar.gz desde tools.hana.ondemand.com</span>
+
+<span class="comment"># 4. Herramientas npm</span>
+sudo npm install -g @sap/cds-dk @ui5/cli mbt</div>
+
+      <h4>Instalar el plugin cf deploy (MultiApps)</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Instalar plugin para deployar archivos .mtar</span>
+cf install-plugin multiapps
+
+<span class="comment"># Verificar instalación</span>
+cf plugins | grep multiapps</div>
+
+      <h4>Verificar todas las instalaciones</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span>node --version      <span class="comment"># → v18.x.x</span>
+npm --version       <span class="comment"># → 9.x o 10.x</span>
+git --version       <span class="comment"># → git version 2.x</span>
+cf version          <span class="comment"># → cf version 8.x.x</span>
+btp --version       <span class="comment"># → SAP BTP command line interface (client)...</span>
+cds --version       <span class="comment"># → @sap/cds: 7.x.x</span>
+ui5 --version       <span class="comment"># → 3.x.x</span>
+mbt --version       <span class="comment"># → 1.2.x</span></div>
+
+      <div class="callout danger">
+        <span class="callout-icon">🚨</span>
+        <div class="callout-body"><strong>Si cf version devuelve 7.x:</strong> Tenés CF CLI v7 instalado. Desinstalalo completamente y seguí las instrucciones del Paso 3 para instalar v8. Los dos no conviven sin problemas.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────── PASO 4: LOGIN ────── -->
+  <div class="step-card" id="step4">
+    <div class="step-header" onclick="toggleStep('step4')">
+      <div class="step-num">4</div>
+      <div class="step-title">
+        <h3>Login BTP CLI y CF CLI</h3>
+        <p>Autenticación en SAP BTP y Cloud Foundry · ~10 min</p>
+      </div>
+      <span class="step-badge badge-semi">⚠ Semi-manual · SSO</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-body"><strong>SAP usa autenticación OIDC con browser.</strong> No es posible hacer login headless con usuario/contraseña directo en terminal. En Trial esto se maneja con one-time passcodes que duran 60 segundos — tené el browser a mano.</div>
+      </div>
+
+      <h4>Login BTP CLI</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Login en el Global Account de SAP BTP</span>
+<span class="comment"># Reemplazá REGION por tu región: eu10, us10, ap21, etc.</span>
+btp login --url https://cli.btp.cloud.sap --idp sap.default
+
+<span class="comment"># Se abre el browser para completar el login OIDC</span>
+<span class="comment"># Usá tu email y contraseña de SAP Universal ID</span>
+
+<span class="comment"># Verificar login</span>
+btp list accounts/subaccount</div>
+
+      <div class="substep">
+        <div class="substep-n">💡</div>
+        <div class="substep-body">
+          <strong>URL de BTP CLI por región</strong>
+          <table>
+            <tr><th>Región</th><th>URL BTP CLI</th></tr>
+            <tr><td>eu10 (Frankfurt)</td><td><code>https://cli.btp.cloud.sap</code></td></tr>
+            <tr><td>us10 (Virginia)</td><td><code>https://cli.btp.cloud.sap</code></td></tr>
+            <tr><td>Todas las regiones</td><td><code>https://cli.btp.cloud.sap</code> (global)</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <h4>Seleccionar Subaccount activo en BTP CLI</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Listar subaccounts disponibles</span>
+btp list accounts/subaccount
+
+<span class="comment"># Seleccionar el subaccount Trial</span>
+btp target --subaccount SUBACCOUNT_GUID
+
+<span class="comment"># El GUID aparece en la columna "id" del comando anterior</span>
+<span class="comment"># También lo podés ver en el Cockpit: URL del browser cuando estás en el subaccount</span></div>
+
+      <h4>Login CF CLI</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Login con SSO (recomendado para Trial)</span>
+<span class="comment"># Reemplazá la URL con tu API Endpoint de CF (lo anotaste en el Paso 2)</span>
+cf login -a https://api.cf.eu10.hana.ondemand.com --sso
+
+<span class="comment"># El comando va a mostrarte una URL temporal, por ejemplo:</span>
+<span class="comment"># One Time Code ( Get one at https://login.cf.eu10.hana.ondemand.com/passcode )</span>
+
+<span class="comment"># 1. Abrí esa URL en el browser</span>
+<span class="comment"># 2. Logueate con tu cuenta SAP</span>
+<span class="comment"># 3. Copiá el código de 6 caracteres que aparece</span>
+<span class="comment"># 4. Pegalo en la terminal (tenés 60 segundos)</span>
+
+<span class="comment"># Seleccionar Org y Space cuando te lo pida</span></div>
+
+      <div class="callout danger">
+        <span class="callout-icon">⏱️</span>
+        <div class="callout-body"><strong>El one-time passcode expira en 60 segundos.</strong> Si tardás, el login falla con "Invalid passcode". Simplemente corré <code>cf login --sso</code> de nuevo para obtener un código nuevo.</div>
+      </div>
+
+      <h4>Verificar login CF</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Ver la sesión activa</span>
+cf target
+
+<span class="comment"># Salida esperada:</span>
+<span class="comment"># API endpoint:   https://api.cf.eu10.hana.ondemand.com</span>
+<span class="comment"># API version:    3.x.x</span>
+<span class="comment"># user:           tu@email.com</span>
+<span class="comment"># org:            trialXXXXXXXXXtrial</span>
+<span class="comment"># space:          dev</span></div>
+    </div>
+  </div>
+
+  <!-- ────── PASO 5: CF SPACE ────── -->
+  <div class="step-card" id="step5">
+    <div class="step-header" onclick="toggleStep('step5')">
+      <div class="step-num">5</div>
+      <div class="step-title">
+        <h3>Crear CF Space (si no lo hiciste en el Cockpit)</h3>
+        <p>Espacio de trabajo donde van los servicios y las apps · ~5 min</p>
+      </div>
+      <span class="step-badge badge-auto">💻 CLI</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="callout tip">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">Si ya creaste el Space "dev" desde el Cockpit en el Paso 2, podés saltarte este paso. Solo verificá con <code>cf spaces</code>.</div>
+      </div>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Listar spaces existentes</span>
+cf spaces
+
+<span class="comment"># Crear space "dev" si no existe</span>
+cf create-space dev
+
+<span class="comment"># Apuntar a ese space</span>
+cf target -s dev
+
+<span class="comment"># Verificar</span>
+cf target</div>
+    </div>
+  </div>
+
+  <!-- ────── PASO 6: CREAR SERVICIOS ────── -->
+  <div class="step-card" id="step6">
+    <div class="step-header" onclick="toggleStep('step6')">
+      <div class="step-num">6</div>
+      <div class="step-title">
+        <h3>Crear instancias de servicios CF</h3>
+        <p>xsuaa, destination, html5-apps-repo × 2, application-logs · ~20 min</p>
+      </div>
+      <span class="step-badge badge-auto">💻 CLI</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="callout tip">
+        <span class="callout-icon">ℹ️</span>
+        <div class="callout-body">Los servicios se crean de forma asincrónica. Después de cada <code>cf create-service</code> podés verificar el estado con <code>cf services</code>. Esperá a que el status sea <strong>"create succeeded"</strong> antes de continuar.</div>
+      </div>
+
+      <h4>Verificar catálogo de servicios disponibles</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Ver todos los servicios disponibles en tu espacio</span>
+cf marketplace
+
+<span class="comment"># Filtrar por un servicio específico</span>
+cf marketplace -e xsuaa
+cf marketplace -e html5-apps-repo</div>
+
+      <h4>1. Servicio XSUAA (autenticación OAuth2)</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Crear instancia XSUAA</span>
+<span class="comment"># Nombre del servicio: xsuaa</span>
+<span class="comment"># Plan: application</span>
+<span class="comment"># Nombre de la instancia: my-app-xsuaa</span>
+cf create-service xsuaa application my-app-xsuaa -c xs-security.json
+
+<span class="comment"># NOTA: xs-security.json debe existir antes de este comando</span>
+<span class="comment"># Ver Paso 9 de la sección Proyecto para generarlo</span>
+<span class="comment"># Si querés crear el servicio sin config inicial (para ajustar después):</span>
+cf create-service xsuaa application my-app-xsuaa</div>
+
+      <h4>2. Servicio Destination (conectividad externa)</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Plan: lite (gratuito en Trial)</span>
+cf create-service destination lite my-app-destination</div>
+
+      <h4>3. HTML5 App Repository — app-host (subir estáticos)</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Plan: app-host — para subir el contenido estático (HTML, JS, CSS de UI5)</span>
+cf create-service html5-apps-repo app-host my-app-html5-host</div>
+
+      <h4>4. HTML5 App Repository — app-runtime (AppRouter)</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Plan: app-runtime — credenciales OAuth que usa el AppRouter en runtime</span>
+<span class="comment"># ⚠ CRÍTICO: el AppRouter DEBE estar bindeado a app-runtime, NO a app-host</span>
+<span class="comment"># Bindear el AppRouter a app-host genera el error "grant_type: missing"</span>
+cf create-service html5-apps-repo app-runtime my-app-html5-runtime</div>
+
+      <h4>5. Application Logging (logs centralizados)</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Plan: lite</span>
+cf create-service application-logs lite my-app-logs</div>
+
+      <h4>Verificar todos los servicios</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Ver estado de todos los servicios del space</span>
+cf services
+
+<span class="comment"># Salida esperada (todos en "create succeeded"):</span>
+<span class="comment"># name                     service           plan         bound apps   last operation</span>
+<span class="comment"># my-app-xsuaa             xsuaa             application               create succeeded</span>
+<span class="comment"># my-app-destination       destination       lite                      create succeeded</span>
+<span class="comment"># my-app-html5-host        html5-apps-repo   app-host                  create succeeded</span>
+<span class="comment"># my-app-html5-runtime     html5-apps-repo   app-runtime               create succeeded</span>
+<span class="comment"># my-app-logs              application-logs  lite                      create succeeded</span></div>
+
+      <div class="callout warn">
+        <span class="callout-icon">⏳</span>
+        <div class="callout-body">Algunos servicios tardan hasta 5 minutos en crearse. Si el status es <strong>"create in progress"</strong>, esperá y repetí <code>cf services</code> hasta que todos digan <strong>"create succeeded"</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────── PASO 7: BAS ────── -->
+  <div class="step-card" id="step7">
+    <div class="step-header" onclick="toggleStep('step7')">
+      <div class="step-num">7</div>
+      <div class="step-title">
+        <h3>Suscribir SAP BAS y asignar roles</h3>
+        <p>IDE en la nube de SAP — limitación del Trial, solo desde Cockpit · ~15 min</p>
+      </div>
+      <span class="step-badge badge-manual">🖱 Manual · Cockpit</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="callout danger">
+        <span class="callout-icon">🚨</span>
+        <div class="callout-body"><strong>Limitación de SAP Trial:</strong> BAS no se puede suscribir por API ni CLI. Es obligatorio hacerlo desde el Cockpit web. No existe ninguna alternativa automatizable para este paso.</div>
+      </div>
+
+      <div class="substep">
+        <div class="substep-n">1</div>
+        <div class="substep-body">
+          <strong>Ir a Service Marketplace en el Cockpit</strong>
+          <p>En tu Subaccount Trial → menú izquierdo → <strong>Services</strong> → <strong>Service Marketplace</strong></p>
+        </div>
+      </div>
+      <div class="substep">
+        <div class="substep-n">2</div>
+        <div class="substep-body">
+          <strong>Buscar SAP Business Application Studio</strong>
+          <p>En el buscador escribí <strong>"Business Application Studio"</strong>. Hacé clic en la card del servicio.</p>
+        </div>
+      </div>
+      <div class="substep">
+        <div class="substep-n">3</div>
+        <div class="substep-body">
+          <strong>Crear suscripción</strong>
+          <p>Hacé clic en <strong>"Create"</strong>. En el modal:</p>
+          <ul>
+            <li><strong>Service:</strong> SAP Business Application Studio</li>
+            <li><strong>Plan:</strong> free (Trial)</li>
+          </ul>
+          <p>Confirmá con <strong>"Create"</strong>. La suscripción tarda 2-5 minutos.</p>
+        </div>
+      </div>
+      <div class="substep">
+        <div class="substep-n">4</div>
+        <div class="substep-body">
+          <strong>Asignar Role Collection al usuario</strong>
+          <p>Sin este rol, BAS va a dar un error de acceso aunque esté suscripto.</p>
+          <ul>
+            <li>Menú izquierdo → <strong>Security</strong> → <strong>Role Collections</strong></li>
+            <li>Buscá <strong>"Business_Application_Studio_Developer"</strong></li>
+            <li>Hacé clic en el rol → <strong>Edit</strong> → pestaña <strong>Users</strong></li>
+            <li>Agregá tu email de SAP → <strong>Save</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="substep">
+        <div class="substep-n">5</div>
+        <div class="substep-body">
+          <strong>Acceder a BAS</strong>
+          <p>Menú izquierdo → <strong>Instances and Subscriptions</strong> → <strong>SAP Business Application Studio</strong> → <strong>Go to Application</strong></p>
+          <p>URL directa: <a href="https://[subaccount-subdomain].eu10cf.applicationstudio.cloud.sap/index.html" target="_blank">https://[subdomain].eu10cf.applicationstudio.cloud.sap/index.html</a></p>
+        </div>
+      </div>
+      <div class="callout tip">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">BAS es opcional si vas a desarrollar localmente con VS Code. Solo es necesario si preferís el IDE de SAP en el browser.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════ SECTION: PROYECTO ══════════════════════════ -->
+<section id="s-proyecto">
+  <h2 class="section-title">🏗️ Estructura del <span>Proyecto</span></h2>
+  <p class="section-desc">Creación manual de un proyecto CAP + SAPUI5 + AppRouter desde cero. Incluye xs-security.json y mta.yaml completos.</p>
+
+  <!-- PASO 8: SCAFFOLDING -->
+  <div class="step-card" id="step8">
+    <div class="step-header" onclick="toggleStep('step8')">
+      <div class="step-num">8</div>
+      <div class="step-title">
+        <h3>Crear estructura del proyecto</h3>
+        <p>Scaffold CAP + SAPUI5 + AppRouter · ~30 min</p>
+      </div>
+      <span class="step-badge badge-auto">💻 CLI</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <h4>Estructura de carpetas objetivo</h4>
+      <div class="code-block">my-btp-app/
+├── approuter/             ← AppRouter Node.js
+│   ├── package.json
+│   └── xs-app.json        ← Reglas de routing del AppRouter
+├── app/
+│   └── my-btp-app/        ← App SAPUI5 / Fiori
+│       ├── webapp/
+│       │   ├── manifest.json
+│       │   ├── Component.js
+│       │   └── index.html
+│       ├── ui5.yaml
+│       └── package.json
+├── srv/                   ← Backend CAP (OData / REST)
+│   ├── cat-service.cds
+│   ├── cat-service.js
+│   └── package.json
+├── db/                    ← Schema de base de datos CDS
+│   └── schema.cds
+├── xs-security.json       ← Config XSUAA
+├── mta.yaml               ← Descriptor MTA (build + deploy)
+└── package.json           ← Root package.json</div>
+
+      <h4>1. Inicializar el proyecto CAP</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Crear directorio del proyecto</span>
+mkdir my-btp-app
+cd my-btp-app
+
+<span class="comment"># Inicializar proyecto CAP</span>
+cds init
+
+<span class="comment"># Agrega: package.json, .gitignore, README.md, carpetas srv/, db/, app/</span>
+<span class="comment"># Verificar estructura generada</span>
+ls -la</div>
+
+      <h4>2. Agregar módulo de base de datos (schema)</h4>
+      <p>Editá <code>db/schema.cds</code>:</p>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment">// db/schema.cds</span>
+namespace my.btpapp;
+
+entity Products {
+  key ID    : UUID;
+  name      : String(100) @mandatory;
+  descr     : String(500);
+  price     : Decimal(10,2);
+  currency  : String(3);
+  createdAt : Timestamp @cds.on.insert: $now;
+  modifiedAt: Timestamp @cds.on.update: $now;
+}</div>
+
+      <h4>3. Definir el servicio CAP</h4>
+      <p>Editá <code>srv/cat-service.cds</code>:</p>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment">// srv/cat-service.cds</span>
+using my.btpapp from '../db/schema';
+
+service CatalogService @(path:'/catalog') {
+  entity Products as projection on btpapp.Products;
+  annotate Products with @odata.draft.enabled;
+}</div>
+
+      <h4>4. Instalar dependencias SAP en el proyecto</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># En la raíz del proyecto</span>
+npm install
+
+<span class="comment"># Agregar soporte BTP (XSUAA + logging)</span>
+npm install @sap/xssec @sap/audit-logging
+
+<span class="comment"># Agregar passport para integración XSUAA</span>
+npm install passport
+
+<span class="comment"># En el directorio srv/</span>
+cd srv && npm init -y
+npm install @sap/cds @sap/xssec passport
+cd ..</div>
+
+      <h4>5. Crear el AppRouter</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Crear directorio del AppRouter</span>
+mkdir approuter
+cd approuter
+npm init -y
+npm install @sap/approuter
+cd ..</div>
+
+      <p>Crear <code>approuter/xs-app.json</code>:</p>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span>{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/catalog/(.*)$",
+      "target": "/catalog/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}</div>
+
+      <p>Crear <code>approuter/package.json</code>:</p>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span>{
+  "name": "my-btp-app-approuter",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node node_modules/@sap/approuter/approuter.js"
+  },
+  "dependencies": {
+    "@sap/approuter": "^14.0.0"
+  }
+}</div>
+
+      <h4>6. Crear la app SAPUI5</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Desde la raíz del proyecto</span>
+mkdir -p app/my-btp-app/webapp
+cd app/my-btp-app
+
+<span class="comment"># Inicializar proyecto UI5</span>
+npm init -y
+npm install --save-dev @ui5/cli @openui5/sap.ui.core</div>
+
+      <p>Crear <code>app/my-btp-app/webapp/manifest.json</code>:</p>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span>{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "my.btpapp",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": { "version": "1.0.0" },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/catalog/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": { "icon": "" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "my.btpapp.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "app"
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "settings": { "synchronizationMode": "None", "operationMode": "Server" }
+      }
+    }
+  }
+}</div>
+
+      <p>Crear <code>app/my-btp-app/ui5.yaml</code>:</p>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span>specVersion: "3.0"
+metadata:
+  name: my-btp-app
+type: application
+framework:
+  name: SAPUI5
+  version: "1.120.0"
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ushell
+builder:
+  resources:
+    excludes:
+      - "/test/**"
+      - "/localService/**"</div>
+    </div>
+  </div>
+
+  <!-- PASO 9: XS-SECURITY -->
+  <div class="step-card" id="step9">
+    <div class="step-header" onclick="toggleStep('step9')">
+      <div class="step-num">9</div>
+      <div class="step-title">
+        <h3>Configurar xs-security.json</h3>
+        <p>Definición de OAuth2 scopes y roles para XSUAA · ~10 min</p>
+      </div>
+      <span class="step-badge badge-auto">💻 CLI</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <p>El archivo <code>xs-security.json</code> se crea en la raíz del proyecto y define cómo se autentica y autoriza la app vía XSUAA.</p>
+
+      <h4>xs-security.json base</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span>{
+  "xsappname": "my-btp-app",
+  "tenant-mode": "dedicated",
+  "description": "My BTP Application Security Descriptor",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.read",
+      "description": "Read access to catalog data"
+    },
+    {
+      "name": "$XSAPPNAME.write",
+      "description": "Write access to catalog data"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "Viewer",
+      "description": "Can view catalog data",
+      "scope-references": ["$XSAPPNAME.read"]
+    },
+    {
+      "name": "Editor",
+      "description": "Can view and edit catalog data",
+      "scope-references": ["$XSAPPNAME.read", "$XSAPPNAME.write"]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "my-btp-app-viewer",
+      "description": "Viewer Role Collection",
+      "role-template-references": ["$XSAPPNAME.Viewer"]
+    },
+    {
+      "name": "my-btp-app-editor",
+      "description": "Editor Role Collection",
+      "role-template-references": ["$XSAPPNAME.Editor"]
+    }
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": ["https://*.hana.ondemand.com/**"]
+  }
+}</div>
+
+      <div class="callout tip">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">El valor <code>"tenant-mode": "dedicated"</code> es correcto para Trial (un solo tenant). En escenarios multi-tenant se usa <code>"shared"</code>.</div>
+      </div>
+
+      <h4>Actualizar el servicio XSUAA con este archivo</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Si el servicio ya existe, actualizarlo con el nuevo xs-security.json:</span>
+cf update-service my-app-xsuaa -c xs-security.json
+
+<span class="comment"># Si todavía no lo creaste:</span>
+cf create-service xsuaa application my-app-xsuaa -c xs-security.json</div>
+    </div>
+  </div>
+
+  <!-- PASO 10: MTA.YAML -->
+  <div class="step-card" id="step10">
+    <div class="step-header" onclick="toggleStep('step10')">
+      <div class="step-num">10</div>
+      <div class="step-title">
+        <h3>Configurar mta.yaml</h3>
+        <p>Descriptor Multi-Target Application — el corazón del deploy · ~20 min</p>
+      </div>
+      <span class="step-badge badge-auto">💻 Configuración</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-body">El <code>mta.yaml</code> es el archivo más crítico del deploy. Los errores más comunes son: AppRouter bindeado a <code>app-host</code> en lugar de <code>app-runtime</code>, uso de <code>npm ci</code> en lugar de <code>npm install</code>, y dependencias circulares con <code>deployed-after</code>.</div>
+      </div>
+
+      <p>Creá el archivo <code>mta.yaml</code> en la raíz del proyecto:</p>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span>_schema-version: '3.1'
+ID: my-btp-app
+version: 1.0.0
+description: "SAP BTP App — CAP + SAPUI5 + AppRouter"
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --prefix app/my-btp-app
+
+modules:
+
+  # ─── 1. AppRouter ───────────────────────────────────────────────
+  - name: my-btp-app-approuter
+    type: approuter.nodejs
+    path: approuter/
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: my-app-xsuaa
+      - name: my-app-destination
+      # ⚠ IMPORTANTE: app-runtime, NO app-host
+      - name: my-app-html5-runtime
+      - name: srv-api
+        group: destinations
+        properties:
+          forwardAuthToken: true
+          strictSSL: false
+          name: srv-api
+          url: "~{srv-url}"
+    build-parameters:
+      builder: npm
+      # ⚠ IMPORTANTE: usar npm install, NO npm-ci
+      build-result: "."
+      ignore:
+        - "node_modules/"
+        - "default-env.json"
+
+  # ─── 2. UI Deployer (sube el contenido estático a html5-apps-repo) ───
+  - name: my-btp-app-ui-deployer
+    type: com.sap.application.content
+    path: app/my-btp-app
+    requires:
+      - name: my-app-html5-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      supported-platforms: []
+
+  # ─── 3. CAP Backend (srv) ───────────────────────────────────────
+  - name: my-btp-app-srv
+    type: nodejs
+    path: srv/
+    parameters:
+      buildpack: nodejs_buildpack
+      disk-quota: 512M
+      memory: 256M
+    properties:
+      EXIT: 1
+    requires:
+      - name: my-app-xsuaa
+      - name: my-app-logs
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: npm
+      build-result: "."
+      ignore:
+        - "node_modules/"
+
+resources:
+
+  # ─── XSUAA ───────────────────────────────────────────────────────
+  - name: my-app-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: my-btp-app-${org}-${space}
+        tenant-mode: dedicated
+
+  # ─── Destination ─────────────────────────────────────────────────
+  - name: my-app-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+
+  # ─── HTML5 App Host (contenido estático) ─────────────────────────
+  - name: my-app-html5-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  # ─── HTML5 App Runtime (AppRouter OAuth) ─────────────────────────
+  - name: my-app-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  # ─── Application Logs ────────────────────────────────────────────
+  - name: my-app-logs
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: application-logs
+      service-plan: lite</div>
+
+      <div class="callout success">
+        <span class="callout-icon">✅</span>
+        <div class="callout-body">
+          <strong>4 errores críticos que este mta.yaml ya tiene resueltos:</strong>
+          <ul style="margin-top:6px;">
+            <li>AppRouter bindeado a <code>app-runtime</code> (no <code>app-host</code>) → evita "grant_type: missing"</li>
+            <li>Usa <code>npm install</code> (no <code>npm ci</code>) → evita fallas en el build</li>
+            <li>No incluye módulo <code>xsuaa-deployer</code> → evita conflictos en proyectos simples</li>
+            <li>No usa <code>deployed-after</code> → evita dependencias circulares</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SECTION: DEPLOY ══════════════════════════ -->
+<section id="s-deploy">
+  <h2 class="section-title">☁️ <span>Build</span> y Deploy</h2>
+  <p class="section-desc">Compilar el proyecto con MBT y deployar en SAP BTP Cloud Foundry.</p>
+
+  <!-- PASO 11: BUILD -->
+  <div class="step-card" id="step11">
+    <div class="step-header" onclick="toggleStep('step11')">
+      <div class="step-num">11</div>
+      <div class="step-title">
+        <h3>Build con MBT</h3>
+        <p>Compilar mta.yaml → archivo .mtar deployable · ~10 min</p>
+      </div>
+      <span class="step-badge badge-auto">💻 CLI</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Desde la raíz del proyecto (donde está mta.yaml)</span>
+cd my-btp-app
+
+<span class="comment"># Build del MTA</span>
+mbt build
+
+<span class="comment"># El comando genera:</span>
+<span class="comment"># mta_archives/my-btp-app_1.0.0.mtar</span>
+
+<span class="comment"># Si querés más detalle del proceso:</span>
+mbt build --mtar my-btp-app.mtar
+
+<span class="comment"># Verificar que el .mtar se generó</span>
+ls mta_archives/</div>
+
+      <div class="callout tip">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">El build corre <code>npm install</code> y <code>npm run build</code> en cada módulo. Si alguno falla, corré manualmente <code>npm install</code> en ese directorio y luego reintentá el build.</div>
+      </div>
+
+      <h4>Errores comunes en el build</h4>
+      <table>
+        <tr><th>Error</th><th>Causa</th><th>Solución</th></tr>
+        <tr><td><code>npm ci</code> failed</td><td>mta.yaml usa npm-ci en lugar de npm install</td><td>Reemplazá <code>npm-ci</code> por <code>npm</code> en build-parameters del módulo</td></tr>
+        <tr><td>Module not found</td><td>Falta <code>node_modules/</code> en algún submódulo</td><td>Correr <code>npm install</code> en <code>srv/</code>, <code>approuter/</code> y <code>app/my-btp-app/</code></td></tr>
+        <tr><td>mta.yaml parse error</td><td>YAML mal indentado</td><td>Verificar indentación (2 espacios) con un validator de YAML online</td></tr>
+        <tr><td>Unknown builder</td><td>Builder incorrecto en mta.yaml</td><td>Verificar que el tipo de módulo coincida con el builder</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PASO 12: DEPLOY -->
+  <div class="step-card" id="step12">
+    <div class="step-header" onclick="toggleStep('step12')">
+      <div class="step-num">12</div>
+      <div class="step-title">
+        <h3>Deploy en Cloud Foundry</h3>
+        <p>Subir el .mtar a CF y verificar que las apps levanten · ~15 min</p>
+      </div>
+      <span class="step-badge badge-auto">💻 CLI</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Verificar que estás logueado y apuntando al space correcto</span>
+cf target
+
+<span class="comment"># Deploy del .mtar</span>
+cf deploy mta_archives/my-btp-app_1.0.0.mtar
+
+<span class="comment"># Con output más detallado:</span>
+cf deploy mta_archives/my-btp-app_1.0.0.mtar --retries 1
+
+<span class="comment"># El proceso puede tardar 5-15 minutos</span>
+<span class="comment"># Vas a ver el progreso de cada módulo:</span>
+<span class="comment"># Uploading 1 files...</span>
+<span class="comment"># Processing: Deploying...</span>
+<span class="comment"># Application: my-btp-app-approuter started</span>
+<span class="comment"># Application: my-btp-app-srv started</span></div>
+
+      <h4>Verificar estado post-deploy</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Ver todas las apps del space</span>
+cf apps
+
+<span class="comment"># Salida esperada (todas en "started"):</span>
+<span class="comment"># name                        requested state   instances</span>
+<span class="comment"># my-btp-app-approuter        started           1/1</span>
+<span class="comment"># my-btp-app-srv              started           1/1</span>
+
+<span class="comment"># Ver URL de la app</span>
+cf app my-btp-app-approuter
+
+<span class="comment"># La URL de acceso aparece en la línea "routes:"</span>
+<span class="comment"># Ejemplo: my-btp-app-approuter.cfapps.eu10.hana.ondemand.com</span></div>
+
+      <h4>Ver logs en tiempo real</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Logs recientes (útil para debuggear crashes)</span>
+cf logs my-btp-app-approuter --recent
+
+<span class="comment"># Logs en tiempo real (streaming)</span>
+cf logs my-btp-app-approuter
+
+<span class="comment"># Logs del backend CAP</span>
+cf logs my-btp-app-srv --recent</div>
+
+      <div class="callout success">
+        <span class="callout-icon">🎉</span>
+        <div class="callout-body"><strong>¡Deploy exitoso!</strong> Abrí la URL del AppRouter en el browser. Deberías ver el login de SAP y, luego de autenticarte, tu app SAPUI5.</div>
+      </div>
+
+      <h4>Comandos útiles post-deploy</h4>
+      <div class="code-block"><span class="code-btn-row"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><button class="dl-btn" onclick="downloadCode(this)">⬇ .txt</button></span><span class="comment"># Reiniciar una app</span>
+cf restart my-btp-app-approuter
+
+<span class="comment"># Ver variables de entorno de una app</span>
+cf env my-btp-app-approuter
+
+<span class="comment"># Ver los servicios bindeados a una app</span>
+cf services
+
+<span class="comment"># Escalar instancias</span>
+cf scale my-btp-app-approuter -i 2
+
+<span class="comment"># Detener app (para ahorrar quota en Trial)</span>
+cf stop my-btp-app-approuter
+cf stop my-btp-app-srv
+
+<span class="comment"># Eliminar el MTA completo</span>
+cf undeploy my-btp-app --delete-services</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SECTION: TROUBLESHOOTING ══════════════════════════ -->
+<section id="s-troubleshooting">
+  <h2 class="section-title">🔧 <span>Troubleshooting</span></h2>
+  <p class="section-desc">Los errores más frecuentes en cada etapa del setup manual, con causa raíz y solución exacta. Hacé clic en cada error para ver la solución.</p>
+
+  <h4>🔐 Errores de Login y Autenticación</h4>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">One Time Code has expired or invalid</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> El passcode SSO de CF dura 60 segundos. Si tardás en pegarlo, expira.<br><br>
+      <strong>Solución:</strong> Corré <code>cf login -a [API-ENDPOINT] --sso</code> nuevamente. La URL del browser te genera un código nuevo. Tenelo listo antes de correr el comando.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">FAILED: Not logged in. Use 'cf login' or 'cf api'</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> La sesión de CF expiró (suele pasar después de varias horas).<br><br>
+      <strong>Solución:</strong> <code>cf login -a https://api.cf.eu10.hana.ondemand.com --sso</code>
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">btp: command not found / cf: command not found</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> La herramienta no está en el PATH del sistema, o el terminal no se reinició después de instalarla.<br><br>
+      <strong>Solución:</strong> Cerrá y volvé a abrir el terminal. En Windows, abrí una terminal nueva como Administrador. Verificá con <code>where btp</code> (Windows) o <code>which btp</code> (Mac/Linux).
+    </div>
+  </div>
+
+  <h4 style="margin-top:20px;">⚙️ Errores de Servicios CF</h4>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Service broker returned error: quota exceeded</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> Llegaste al límite de instancias de servicios en Trial (generalmente 10 instancias en total).<br><br>
+      <strong>Solución:</strong> Eliminá servicios que no uses: <code>cf delete-service NOMBRE-SERVICIO</code>. Podés ver todos con <code>cf services</code>.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Service 'html5-apps-repo' not found en cf marketplace</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> El entitlement del servicio no está asignado al subaccount.<br><br>
+      <strong>Solución:</strong> En el Cockpit → Subaccount → Entitlements → Edit → Buscá "HTML5 Application Repository" → Asigná los planes <code>app-host</code> y <code>app-runtime</code> → Save.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Service instance status: create failed</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> El JSON de configuración tiene un error de sintaxis, o el plan no está disponible.<br><br>
+      <strong>Solución:</strong> <code>cf service my-app-xsuaa</code> para ver el mensaje de error detallado. Eliminá la instancia con <code>cf delete-service my-app-xsuaa</code> y volvé a crearla.
+    </div>
+  </div>
+
+  <h4 style="margin-top:20px;">🏗️ Errores de Build (mbt)</h4>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Build error: command 'npm ci' exited with code 1</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> MBT intenta usar <code>npm ci</code> que requiere un <code>package-lock.json</code> exacto que puede no existir o estar desactualizado.<br><br>
+      <strong>Solución:</strong> En el <code>mta.yaml</code>, en el bloque <code>build-parameters</code> de cada módulo, cambiá el builder de <code>npm-ci</code> a <code>npm</code>.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Cannot find module '@sap/approuter'</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> Las dependencias del AppRouter no están instaladas localmente.<br><br>
+      <strong>Solución:</strong> <code>cd approuter && npm install && cd ..</code>. Luego reintentá <code>mbt build</code>.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">YAML parse error: found duplicate key</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> El mta.yaml tiene una clave duplicada o indentación incorrecta.<br><br>
+      <strong>Solución:</strong> Pegá el contenido del mta.yaml en <a href="https://yamlchecker.com" target="_blank">yamlchecker.com</a> para validarlo. YAML usa 2 espacios de indentación, nunca tabs.
+    </div>
+  </div>
+
+  <h4 style="margin-top:20px;">☁️ Errores de Deploy (cf deploy)</h4>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">grant_type: missing field — AppRouter crashea</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> El AppRouter está bindeado al plan <code>app-host</code> del HTML5 App Repository. Este plan no provee credenciales OAuth. El AppRouter necesita <code>app-runtime</code>.<br><br>
+      <strong>Solución:</strong> En el <code>mta.yaml</code>, en el módulo del AppRouter, en la sección <code>requires</code>, reemplazá la referencia a <code>app-host</code> por una a <code>app-runtime</code>. Creá una instancia del plan <code>app-runtime</code> si no existe.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Application crashed immediately after start</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> Error en el código de la app, variable de entorno faltante, o binding mal configurado.<br><br>
+      <strong>Solución:</strong> <code>cf logs my-btp-app-approuter --recent</code> — buscá la línea del error real. Revisá también <code>cf env my-btp-app-approuter</code> para confirmar que los servicios están bindeados.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Deployment failed: circular dependency detected</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> El <code>mta.yaml</code> usa la propiedad <code>deployed-after</code> que puede crear dependencias circulares entre módulos.<br><br>
+      <strong>Solución:</strong> Eliminá todas las apariciones de <code>deployed-after</code> del mta.yaml. En su lugar, usá <code>requires</code> para expresar dependencias.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Error: Memory limit exceeded (Trial quota)</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> El Trial tiene 2GB de RAM total. Si tenés muchas apps corriendo, la memoria se agota.<br><br>
+      <strong>Solución:</strong> <code>cf stop</code> las apps que no uses. Reducí la memoria en mta.yaml (<code>memory: 128M</code> para el srv y <code>memory: 128M</code> para el approuter).
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">403 Forbidden al acceder a la URL del AppRouter</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> El usuario no tiene la Role Collection asignada en el Cockpit.<br><br>
+      <strong>Solución:</strong> Cockpit → Security → Role Collections → Buscá la role collection de tu app → Edit → Users → Agregá tu email → Save. Hacé logout del browser y volvé a entrar.
+    </div>
+  </div>
+
+  <h4 style="margin-top:20px;">🔑 Errores de XSUAA</h4>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">Illegal state: xsappname already taken</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> Ya existe una instancia XSUAA con el mismo <code>xsappname</code> en el espacio.<br><br>
+      <strong>Solución:</strong> Cambiá el <code>xsappname</code> en el <code>xs-security.json</code> (ej: <code>my-btp-app-v2</code>) o eliminá la instancia existente con <code>cf delete-service my-app-xsuaa</code>.
+    </div>
+  </div>
+  <div class="error-item" onclick="toggleError(this)">
+    <div class="error-title">INVALID_REQUEST: redirect_uri not allowed</div>
+    <div class="error-solution">
+      <strong>Causa:</strong> La URL de la app no está en la lista de <code>redirect-uris</code> del xs-security.json.<br><br>
+      <strong>Solución:</strong> Actualizá el xs-security.json para incluir la URL real de tu app: <code>"redirect-uris": ["https://*.hana.ondemand.com/**", "https://tu-app-url/**"]</code> y luego corré <code>cf update-service my-app-xsuaa -c xs-security.json</code>.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SECTION: CHECKLIST ══════════════════════════ -->
+<section id="s-checklist">
+  <h2 class="section-title">✅ <span>Checklist</span> de Validación</h2>
+  <p class="section-desc">Verificá cada ítem antes de dar por completado el setup. Hacé clic en cada uno para marcarlo.</p>
+
+  <div id="checklist-progress" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+      <span style="font-size:12px;color:var(--muted);">Progreso</span>
+      <span id="check-count" style="font-size:12px;color:var(--blue-light);">0 / 20</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="check-fill" style="width:0%"></div></div>
+  </div>
+
+  <h4>📋 Cuenta y Entorno</h4>
+  <ul class="checklist" id="cl1">
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>Cuenta SAP BTP Trial creada y verificada por email</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>Región seleccionada (eu10 / us10 / ap21)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>CF Environment habilitado en el Subaccount</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>CF Space "dev" creado</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>SAP Business Application Studio suscripto (si aplica)</span></li>
+  </ul>
+
+  <h4>🛠 Herramientas Locales</h4>
+  <ul class="checklist" id="cl2">
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>Node.js 18+ LTS instalado (<code>node --version</code> → v18.x)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>CF CLI v8 instalado (<code>cf version</code> → 8.x)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>BTP CLI instalado (<code>btp --version</code> funciona)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>@sap/cds-dk instalado (<code>cds --version</code> → 7+)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>MBT instalado (<code>mbt --version</code> → 1.2+)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>Plugin CF multiapps instalado (<code>cf plugins</code> muestra multiapps)</span></li>
+  </ul>
+
+  <h4>🔐 Autenticación</h4>
+  <ul class="checklist" id="cl3">
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>BTP CLI logueado (<code>btp list accounts/subaccount</code> funciona)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>CF CLI logueado (<code>cf target</code> muestra Org y Space)</span></li>
+  </ul>
+
+  <h4>⚙️ Servicios y Proyecto</h4>
+  <ul class="checklist" id="cl4">
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>Todos los servicios CF en estado "create succeeded" (<code>cf services</code>)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>xs-security.json creado con xsappname único</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>mta.yaml con AppRouter bindeado a <strong>app-runtime</strong> (no app-host)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>mta.yaml usa <strong>npm install</strong> (no npm ci)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>mbt build generó el archivo .mtar sin errores</span></li>
+  </ul>
+
+  <h4>🚀 Deploy</h4>
+  <ul class="checklist" id="cl5">
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>cf deploy completó sin errores</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>Todas las apps en estado "started" (<code>cf apps</code>)</span></li>
+    <li onclick="toggleCheck(this)"><input type="checkbox"/> <span>App accesible desde la URL del AppRouter en el browser</span></li>
+  </ul>
+
+  <div style="margin-top:24px;text-align:center;">
+    <button onclick="resetChecklist()" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:8px 20px;border-radius:8px;cursor:pointer;font-size:13px;">↺ Resetear checklist</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SECTION: RECURSOS ══════════════════════════ -->
+<section id="s-recursos">
+  <h2 class="section-title">🔗 <span>Recursos</span> y Links Oficiales</h2>
+  <p class="section-desc">URLs oficiales de SAP verificadas. Usalas para consultar documentación actualizada.</p>
+
+  <h4>🚪 Portales SAP</h4>
+  <div class="links-grid">
+    <a class="link-card" href="https://account.hanatrial.ondemand.com/" target="_blank">
+      <div class="link-card-icon">🌐</div>
+      <div class="link-card-title">SAP BTP Trial Portal</div>
+      <div class="link-card-url">account.hanatrial.ondemand.com</div>
+    </a>
+    <a class="link-card" href="https://cockpit.eu10.hana.ondemand.com/" target="_blank">
+      <div class="link-card-icon">🎛️</div>
+      <div class="link-card-title">SAP BTP Cockpit (eu10)</div>
+      <div class="link-card-url">cockpit.eu10.hana.ondemand.com</div>
+    </a>
+    <a class="link-card" href="https://tools.hana.ondemand.com/#cloud" target="_blank">
+      <div class="link-card-icon">🛠️</div>
+      <div class="link-card-title">SAP Tools Downloads</div>
+      <div class="link-card-url">tools.hana.ondemand.com/#cloud</div>
+    </a>
+    <a class="link-card" href="https://community.sap.com/" target="_blank">
+      <div class="link-card-icon">👥</div>
+      <div class="link-card-title">SAP Community</div>
+      <div class="link-card-url">community.sap.com</div>
+    </a>
+  </div>
+
+  <h4>📚 Documentación Oficial</h4>
+  <div class="links-grid">
+    <a class="link-card" href="https://help.sap.com/docs/btp" target="_blank">
+      <div class="link-card-icon">📖</div>
+      <div class="link-card-title">SAP BTP Help Portal</div>
+      <div class="link-card-url">help.sap.com/docs/btp</div>
+    </a>
+    <a class="link-card" href="https://cap.cloud.sap/docs/" target="_blank">
+      <div class="link-card-icon">⚡</div>
+      <div class="link-card-title">CAP Documentation</div>
+      <div class="link-card-url">cap.cloud.sap/docs</div>
+    </a>
+    <a class="link-card" href="https://ui5.sap.com/" target="_blank">
+      <div class="link-card-icon">🖥️</div>
+      <div class="link-card-title">SAPUI5 SDK</div>
+      <div class="link-card-url">ui5.sap.com</div>
+    </a>
+    <a class="link-card" href="https://help.sap.com/docs/btp/sap-business-technology-platform/cloud-foundry-environment" target="_blank">
+      <div class="link-card-icon">☁️</div>
+      <div class="link-card-title">CF Environment Docs</div>
+      <div class="link-card-url">help.sap.com — Cloud Foundry</div>
+    </a>
+    <a class="link-card" href="https://help.sap.com/docs/btp/sap-business-technology-platform/account-administration-using-sap-btp-command-line-interface-btp-cli" target="_blank">
+      <div class="link-card-icon">🔑</div>
+      <div class="link-card-title">BTP CLI Reference</div>
+      <div class="link-card-url">help.sap.com — BTP CLI</div>
+    </a>
+    <a class="link-card" href="https://help.sap.com/docs/btp/sap-business-technology-platform/security-administration-managing-authentication-and-authorization" target="_blank">
+      <div class="link-card-icon">🛡️</div>
+      <div class="link-card-title">XSUAA / Security</div>
+      <div class="link-card-url">help.sap.com — Auth & Security</div>
+    </a>
+  </div>
+
+  <h4>🛠 Herramientas — Descarga directa</h4>
+  <div class="links-grid">
+    <a class="link-card" href="https://github.com/cloudfoundry/cli/releases/latest" target="_blank">
+      <div class="link-card-icon">☁️</div>
+      <div class="link-card-title">CF CLI v8 — GitHub Releases</div>
+      <div class="link-card-url">github.com/cloudfoundry/cli/releases</div>
+    </a>
+    <a class="link-card" href="https://nodejs.org/en/download/" target="_blank">
+      <div class="link-card-icon">🟢</div>
+      <div class="link-card-title">Node.js LTS</div>
+      <div class="link-card-url">nodejs.org/en/download</div>
+    </a>
+    <a class="link-card" href="https://github.com/SAP/cloud-mta-build-tool/releases" target="_blank">
+      <div class="link-card-icon">🏗️</div>
+      <div class="link-card-title">MBT — Releases</div>
+      <div class="link-card-url">github.com/SAP/cloud-mta-build-tool</div>
+    </a>
+    <a class="link-card" href="https://github.com/cloudfoundry-incubator/multiapps-cli-plugin/releases" target="_blank">
+      <div class="link-card-icon">🔌</div>
+      <div class="link-card-title">CF Multiapps Plugin</div>
+      <div class="link-card-url">github.com — multiapps-cli-plugin</div>
+    </a>
+  </div>
+
+  <h4>🎓 Tutoriales SAP Developers</h4>
+  <div class="links-grid">
+    <a class="link-card" href="https://developers.sap.com/tutorials/btp-app-cap-create-application.html" target="_blank">
+      <div class="link-card-icon">📝</div>
+      <div class="link-card-title">Create a CAP Application</div>
+      <div class="link-card-url">developers.sap.com</div>
+    </a>
+    <a class="link-card" href="https://developers.sap.com/tutorials/hana-cloud-cap-deploy-mta.html" target="_blank">
+      <div class="link-card-icon">🚀</div>
+      <div class="link-card-title">Deploy CAP app as MTA</div>
+      <div class="link-card-url">developers.sap.com</div>
+    </a>
+    <a class="link-card" href="https://developers.sap.com/tutorials/appstudio-fioriapps-create.html" target="_blank">
+      <div class="link-card-icon">🎨</div>
+      <div class="link-card-title">Create Fiori App in BAS</div>
+      <div class="link-card-url">developers.sap.com</div>
+    </a>
+    <a class="link-card" href="https://developers.sap.com/tutorials/btp-app-cap-add-authorization.html" target="_blank">
+      <div class="link-card-icon">🛡️</div>
+      <div class="link-card-title">Add Authorization to CAP</div>
+      <div class="link-card-url">developers.sap.com</div>
+    </a>
+  </div>
+
+  <h4>⚡ Referencia rápida de comandos</h4>
+  <table>
+    <tr><th>Comando</th><th>Qué hace</th></tr>
+    <tr><td><code>cf login -a [API] --sso</code></td><td>Login en CF con SSO (browser)</td></tr>
+    <tr><td><code>cf target</code></td><td>Ver Org y Space activos</td></tr>
+    <tr><td><code>cf spaces</code></td><td>Listar espacios de la Org</td></tr>
+    <tr><td><code>cf apps</code></td><td>Ver apps del Space actual</td></tr>
+    <tr><td><code>cf services</code></td><td>Ver servicios del Space</td></tr>
+    <tr><td><code>cf marketplace</code></td><td>Ver catálogo de servicios disponibles</td></tr>
+    <tr><td><code>cf create-service S P N</code></td><td>Crear servicio S, plan P, nombre N</td></tr>
+    <tr><td><code>cf logs APP --recent</code></td><td>Ver logs recientes de una app</td></tr>
+    <tr><td><code>cf app APP</code></td><td>Ver detalles y URL de una app</td></tr>
+    <tr><td><code>cf stop APP</code></td><td>Detener una app</td></tr>
+    <tr><td><code>cf restart APP</code></td><td>Reiniciar una app</td></tr>
+    <tr><td><code>mbt build</code></td><td>Compilar mta.yaml → .mtar</td></tr>
+    <tr><td><code>cf deploy FILE.mtar</code></td><td>Deployar el .mtar en CF</td></tr>
+    <tr><td><code>cf undeploy APP --delete-services</code></td><td>Eliminar el MTA y sus servicios</td></tr>
+    <tr><td><code>btp list accounts/subaccount</code></td><td>Listar subaccounts en BTP CLI</td></tr>
+    <tr><td><code>btp target --subaccount GUID</code></td><td>Seleccionar subaccount activo</td></tr>
+  </table>
+</section>
+
+</div><!-- end container -->
+
+<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<footer>
+  <div>Manual de Configuración Manual SAP BTP Cloud Foundry · Basado en documentación oficial SAP</div>
+  <div style="margin-top:6px;">Creado por <a href="https://github.com/juanignaciopalom-lgtm" target="_blank">Juan Ignacio Palomeque</a> · SAP Fullstack Developer Sr</div>
+  <div style="margin-top:6px;color:#444;">SAP, SAP BTP, Cloud Foundry, CAP, SAPUI5 son marcas registradas de SAP SE.</div>
+</footer>
+
+<!-- ══════════════════════════ JAVASCRIPT ══════════════════════════ -->
+<script>
+// ─── NAV ───────────────────────────────────────────────────────
+function showSection(id, el) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  const sec = document.getElementById('s-' + id);
+  if (sec) sec.classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ─── STEP ACCORDION ────────────────────────────────────────────
+function toggleStep(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+
+// ─── ERROR ACCORDION ────────────────────────────────────────────
+function toggleError(el) {
+  el.classList.toggle('open');
+}
+
+// ─── EXTRACT CODE TEXT (sin botones) ───────────────────────────
+function extractCode(block) {
+  const clone = block.cloneNode(true);
+  clone.querySelectorAll('.code-btn-row, .copy-btn, .dl-btn').forEach(el => el.remove());
+  // Reemplazar spans de color por su texto plano
+  return clone.innerText.trim();
+}
+
+// ─── COPY CODE ─────────────────────────────────────────────────
+function copyCode(btn) {
+  const block = btn.closest('.code-block');
+  const text = extractCode(block);
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  }).catch(() => {
+    // Fallback para browsers sin clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  });
+}
+
+// ─── DOWNLOAD CODE AS FILE ─────────────────────────────────────
+function downloadCode(btn) {
+  const block = btn.closest('.code-block');
+  const text = extractCode(block);
+  // Detectar extensión por contenido
+  let ext = 'sh';
+  if (text.trim().startsWith('{') || text.trim().startsWith('[')) ext = 'json';
+  else if (text.includes('_schema-version') || text.includes('sap.app') || text.includes('specVersion')) ext = 'yaml';
+  else if (text.includes('namespace') && text.includes('entity')) ext = 'cds';
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'btp-snippet.' + ext;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ─── PDF MODAL ──────────────────────────────────────────────────
+function showPrintModal() {
+  const m = document.getElementById('print-modal');
+  m.style.display = 'flex';
+}
+function closePrintModal() {
+  document.getElementById('print-modal').style.display = 'none';
+}
+function executePrint() {
+  closePrintModal();
+  // Expand all step cards and error items before printing
+  document.querySelectorAll('.step-card').forEach(c => c.classList.add('open'));
+  document.querySelectorAll('.error-item').forEach(e => e.classList.add('open'));
+  document.querySelectorAll('section').forEach(s => s.classList.add('active'));
+  // Small delay to let DOM update before print dialog
+  setTimeout(() => { window.print(); }, 300);
+}
+// Cerrar modal con ESC o clic fuera
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePrintModal(); });
+document.getElementById('print-modal')?.addEventListener('click', function(e) {
+  if (e.target === this) closePrintModal();
+});
+
+// ─── CHECKLIST ─────────────────────────────────────────────────
+const TOTAL_CHECKS = 20;
+
+function loadChecklist() {
+  const saved = JSON.parse(localStorage.getItem('btp-manual-checklist') || '[]');
+  const all = document.querySelectorAll('.checklist li');
+  all.forEach((li, i) => {
+    if (saved[i]) {
+      li.classList.add('checked');
+      li.querySelector('input').checked = true;
+    }
+  });
+  updateProgress();
+}
+
+function toggleCheck(li) {
+  li.classList.toggle('checked');
+  const cb = li.querySelector('input');
+  cb.checked = !cb.checked;
+  saveChecklist();
+  updateProgress();
+}
+
+function saveChecklist() {
+  const all = document.querySelectorAll('.checklist li');
+  const state = Array.from(all).map(li => li.classList.contains('checked'));
+  localStorage.setItem('btp-manual-checklist', JSON.stringify(state));
+}
+
+function updateProgress() {
+  const checked = document.querySelectorAll('.checklist li.checked').length;
+  const pct = Math.round((checked / TOTAL_CHECKS) * 100);
+  document.getElementById('check-count').textContent = checked + ' / ' + TOTAL_CHECKS;
+  document.getElementById('check-fill').style.width = pct + '%';
+}
+
+function resetChecklist() {
+  document.querySelectorAll('.checklist li').forEach(li => {
+    li.classList.remove('checked');
+    li.querySelector('input').checked = false;
+  });
+  localStorage.removeItem('btp-manual-checklist');
+  updateProgress();
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadChecklist();
+  // Abrir primer step por defecto
+  const firstStep = document.getElementById('step1');
+  if (firstStep) firstStep.classList.add('open');
+});
+</script>
+
+</body></html>
