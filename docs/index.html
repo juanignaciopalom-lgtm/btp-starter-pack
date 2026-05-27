@@ -292,6 +292,23 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
   </div>
 </section>
 
+<!-- ONBOARDING CALLOUT -->
+<div style="background:linear-gradient(90deg,rgba(0,112,242,0.12) 0%,rgba(0,112,242,0.05) 100%);border-top:1px solid rgba(0,112,242,0.25);border-bottom:1px solid rgba(0,112,242,0.25);padding:28px 24px;">
+  <div style="max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div style="font-size:2rem;">🚀</div>
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:var(--text);">Onboarding BTP en horas, no en días.</div>
+        <div style="font-size:0.875rem;color:var(--muted);margin-top:3px;">Entorno BTP Cloud Foundry funcional con proyecto CAP + SAPUI5 + AppRouter — desde cero, el mismo día.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:32px;flex-shrink:0;">
+      <div style="text-align:center;"><div style="font-size:1.4rem;font-weight:900;color:var(--blue-light);">~38 min</div><div style="font-size:11px;color:var(--muted);font-weight:600;">con el wizard</div></div>
+      <div style="text-align:center;"><div style="font-size:1.4rem;font-weight:900;color:var(--muted);">~20 h</div><div style="font-size:11px;color:var(--muted);font-weight:600;">sin herramientas</div></div>
+    </div>
+  </div>
+</div>
+
 <!-- DEMO VISUAL -->
 <div class="demo-section" id="demo">
   <div class="demo-inner">
@@ -462,6 +479,14 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
         </div>
       </div>
       <div class="shot-card">
+        <img src="screenshots/step3-cf-login.jpg" class="shot-real" alt="Paso 3 — CF Login: sesión activa con org y space detectados"/>
+        <div class="shot-meta">
+          <div class="shot-step">PASO 3</div>
+          <div class="shot-title">CF Login — Sesión activa con org y space</div>
+          <div class="shot-hint">CF CLI detecta endpoint, usuario, org y space. Un click para confirmar y avanzar a la creación de servicios.</div>
+        </div>
+      </div>
+      <div class="shot-card">
         <img src="screenshots/step4-servicios.jpg" class="shot-real" alt="Paso 4 — Service Setup: 5 instancias CF creadas y verificadas"/>
         <div class="shot-meta">
           <div class="shot-step">PASO 4</div>
@@ -566,6 +591,44 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
       <div class="feature-card"><div class="feature-icon">🏗️</div><div class="feature-title">Generador de proyectos</div><div class="feature-desc">Genera proyectos CAP + SAPUI5 + AppRouter listos para evolucionar. Incluye <code>mta.yaml</code>, <code>xs-security.json</code>, estructura de carpetas y scripts de build.</div></div>
       <div class="feature-card"><div class="feature-icon">🛡️</div><div class="feature-title">Seguridad by design</div><div class="feature-desc">Sin almacenamiento de credenciales. Auth 100% via OIDC browser. Validación de inputs contra command injection (CWE-78, CWE-88). Logs con sanitización de tokens.</div></div>
       <div class="feature-card"><div class="feature-icon">📖</div><div class="feature-title">Documentación completa</div><div class="feature-desc">Dos manuales interactivos exportables a PDF. Uno para usar la herramienta y otro para el proceso manual, ambos basados en documentación oficial SAP.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ESTRUCTURA GENERADA -->
+<section class="section" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <div class="section-tag">PROYECTO GENERADO</div>
+        <h2 class="section-title">Un solo comando.<br/><span>Todo listo para crecer.</span></h2>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:24px;">El generador produce la estructura completa CAP + SAPUI5 + AppRouter con todos los archivos de configuración, manifests y scripts de build. Nada vacío, nada que agregar antes del primer deploy.</p>
+        <ul style="list-style:none;padding:0;">
+          <li style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.875rem;color:var(--muted);"><span style="color:var(--green-light);flex-shrink:0;">✓</span><span><code>mta.yaml</code> pre-configurado y auto-reparado antes del deploy</span></li>
+          <li style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.875rem;color:var(--muted);"><span style="color:var(--green-light);flex-shrink:0;">✓</span><span><code>xs-security.json</code> con scopes XSUAA generado automáticamente</span></li>
+          <li style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.875rem;color:var(--muted);"><span style="color:var(--green-light);flex-shrink:0;">✓</span><span>AppRouter con <code>xs-app.json</code> y binding correcto a app-runtime</span></li>
+          <li style="display:flex;gap:10px;padding:10px 0;font-size:0.875rem;color:var(--muted);"><span style="color:var(--green-light);flex-shrink:0;">✓</span><span>Scripts de <code>package.json</code> para build, deploy y desarrollo local</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="code-block" style="font-size:12px;line-height:1.7;margin-top:0;">
+<span style="color:var(--blue-light);font-weight:700;">mi-app/</span>
+├── <span style="color:var(--blue-light);">srv/</span>               <span class="comment"># CAP — servicios OData/REST</span>
+│   ├── cat-service.cds
+│   └── cat-service.js
+├── <span style="color:var(--blue-light);">db/</span>                <span class="comment"># CAP — modelo de datos CDS</span>
+│   └── schema.cds
+├── <span style="color:var(--blue-light);">app/</span>               <span class="comment"># SAPUI5 — frontend Fiori</span>
+│   └── <span style="color:var(--blue-light);">webapp/</span>
+│       ├── manifest.json
+│       └── Component.js
+├── <span style="color:var(--blue-light);">approuter/</span>         <span class="comment"># AppRouter — auth + routing</span>
+│   ├── xs-app.json
+│   └── package.json
+├── xs-security.json   <span class="comment"># XSUAA scopes</span>
+├── mta.yaml           <span class="comment"># Deploy descriptor (auto-reparado)</span>
+└── package.json       <span class="comment"># Scripts build + deploy</span></div>
+      </div>
     </div>
   </div>
 </section>
