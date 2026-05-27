@@ -439,9 +439,9 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
   <div class="shots-inner">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <div>
-        <div class="section-tag" style="margin-bottom:10px;">WIZARD REAL · 5 PASOS</div>
+        <div class="section-tag" style="margin-bottom:10px;">WIZARD REAL · CAPTURAS DEL FLUJO</div>
         <h2 class="section-title" style="margin-bottom:6px;">El wizard en tu máquina</h2>
-        <p style="color:var(--muted);font-size:0.875rem;max-width:560px;">Capturas reales del wizard corriendo en entorno local. Cada paso muestra el estado del sistema antes de avanzar al siguiente.</p>
+        <p style="color:var(--muted);font-size:0.875rem;max-width:560px;">Capturas reales del wizard corriendo en entorno local. El flujo completo tiene 6 pasos guiados; estas imágenes muestran los momentos clave del recorrido.</p>
       </div>
     </div>
     <div class="shots-grid">
@@ -462,11 +462,11 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
         </div>
       </div>
       <div class="shot-card">
-        <img src="screenshots/step4-servicios.jpg" class="shot-real" alt="Paso 4 — Service Setup: 4 servicios CF creados y verificados"/>
+        <img src="screenshots/step4-servicios.jpg" class="shot-real" alt="Paso 4 — Service Setup: 5 instancias CF creadas y verificadas"/>
         <div class="shot-meta">
           <div class="shot-step">PASO 4</div>
           <div class="shot-title">Servicios CF — Todos creados</div>
-          <div class="shot-hint">XSUAA, Destination, HTML5 Apps Repository y Application Logging en estado "exists".</div>
+          <div class="shot-hint">XSUAA, Destination, HTML5 Apps Repository (app-host + app-runtime) y Application Logging en estado "exists".</div>
         </div>
       </div>
       <div class="shot-card">
@@ -498,7 +498,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
     <div class="dual-grid">
       <div class="dual-card dual-dev">
         <div class="dual-label">Para el desarrollador</div>
-        <div class="dual-headline">Clonás, instalás y arrancás. Sin leer 40 tabs de documentación SAP.</div>
+        <div class="dual-headline">Clonás, instalás y arrancás. Sin saltar entre múltiples guías y tutoriales dispersos.</div>
         <div class="dual-desc">El wizard te guía paso a paso: verifica que tengas lo necesario, autentica con SSO sin guardar credenciales, crea los servicios CF en orden correcto y genera el proyecto con todos los archivos listos. Antes del deploy aplica los 4 fixes que rompen el build en silencio.</div>
         <a href="#instalar" class="dual-cta">Ver los pasos de instalación →</a>
       </div>
@@ -519,7 +519,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
       <div>
         <div class="section-tag">EL PROBLEMA</div>
         <h2 class="section-title">¿Cuántas horas<br/><span>perdiste con SAP BTP?</span></h2>
-        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:24px;">La configuración inicial de un entorno SAP BTP Cloud Foundry implica instalar herramientas, autenticarse con SSO, crear servicios en orden y lidiar con bugs que SAP no documenta claramente.</p>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:24px;">La configuración inicial de un entorno SAP BTP Cloud Foundry implica instalar herramientas, autenticarse con SSO, crear servicios en orden y resolver comportamientos de la plataforma que no siempre están documentados con claridad.</p>
         <ul class="pain-list">
           <li><span class="pain-icon">📚</span><span>Documentación SAP dispersa en múltiples portales y versiones</span></li>
           <li><span class="pain-icon">🔗</span><span>Error <code>grant_type: missing</code> por AppRouter bindeado al plan incorrecto</span></li>
@@ -531,9 +531,10 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
       <div>
         <div class="before-after">
           <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:20px;">Tiempo de setup — Antes vs. Ahora</div>
-          <div class="ba-row ba-before"><div class="ba-label">ANTES</div><div class="ba-bar-wrap"><div class="ba-bar">~20 horas de trabajo manual</div></div></div>
+          <div class="ba-row ba-before"><div class="ba-label">SIN GUÍA</div><div class="ba-bar-wrap"><div class="ba-bar">~20 horas de trabajo manual</div></div></div>
           <div style="height:10px;"></div>
-          <div class="ba-row ba-after"><div class="ba-label">AHORA</div><div class="ba-bar-wrap"><div class="ba-bar">~38 min</div></div></div>
+          <div class="ba-row ba-after"><div class="ba-label">WIZARD</div><div class="ba-bar-wrap"><div class="ba-bar">~38 min con el wizard</div></div></div>
+          <div style="margin-top:6px;font-size:11px;color:var(--muted);">Con la guía manual paso a paso: ~4 h · Con el wizard automatizado: ~38 min.</div>
           <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);">
             <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:12px;">Qué automatizamos vs. qué requiere el Cockpit SAP</div>
             <table class="auto-table">
@@ -561,10 +562,10 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
     <div class="features-grid">
       <div class="feature-card"><div class="feature-icon">🧙</div><div class="feature-title">Wizard de 6 pasos</div><div class="feature-desc">Interfaz web paso a paso que guía desde verificación de dependencias hasta el deploy completo. Estado persistente entre sesiones, reset por paso.</div></div>
       <div class="feature-card"><div class="feature-icon">🔧</div><div class="feature-title">4 Auto-repairs antes del deploy</div><div class="feature-desc">Detecta y corrige automáticamente los 4 bugs más comunes del <code>mta.yaml</code>: plan incorrecto del AppRouter, npm-ci, xsuaa-deployer y dependencias circulares.</div></div>
-      <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">CLI completo</div><div class="feature-desc">Todos los comandos disponibles por terminal: <code>doctor</code>, <code>init</code>, <code>login</code>, <code>setup</code>, <code>generate-project</code>, <code>deploy</code>. Integrable en CI/CD.</div></div>
+      <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">CLI completo</div><div class="feature-desc">Todos los comandos disponibles por terminal: <code>doctor</code>, <code>init</code>, <code>login</code>, <code>plan</code>, <code>setup</code>, <code>validate</code>, <code>generate-project</code>, <code>deploy</code>. Integrable en CI/CD.</div></div>
       <div class="feature-card"><div class="feature-icon">🏗️</div><div class="feature-title">Generador de proyectos</div><div class="feature-desc">Genera proyectos CAP + SAPUI5 + AppRouter listos para evolucionar. Incluye <code>mta.yaml</code>, <code>xs-security.json</code>, estructura de carpetas y scripts de build.</div></div>
       <div class="feature-card"><div class="feature-icon">🛡️</div><div class="feature-title">Seguridad by design</div><div class="feature-desc">Sin almacenamiento de credenciales. Auth 100% via OIDC browser. Validación de inputs contra command injection (CWE-78, CWE-88). Logs con sanitización de tokens.</div></div>
-      <div class="feature-card"><div class="feature-icon">📖</div><div class="feature-title">Documentación completa</div><div class="feature-desc">Dos manuales interactivos descargables en PDF. Uno para usar la herramienta y otro para el proceso manual, ambos basados en documentación oficial SAP.</div></div>
+      <div class="feature-card"><div class="feature-icon">📖</div><div class="feature-title">Documentación completa</div><div class="feature-desc">Dos manuales interactivos exportables a PDF. Uno para usar la herramienta y otro para el proceso manual, ambos basados en documentación oficial SAP.</div></div>
     </div>
   </div>
 </section>
@@ -618,7 +619,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
         </div>
         <div class="del-card-body">
           <div class="del-feature"><span class="del-feature-check">✓</span> Wizard web en 6 pasos con estado persistente</div>
-          <div class="del-feature"><span class="del-feature-check">✓</span> CLI con 8 comandos (doctor, init, login, setup…)</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> CLI con 8 comandos: doctor, init, login, plan, setup, validate, generate-project, deploy</div>
           <div class="del-feature"><span class="del-feature-check">✓</span> Generador de proyectos CAP + SAPUI5 + AppRouter</div>
           <div class="del-feature"><span class="del-feature-check">✓</span> 4 auto-repairs del mta.yaml antes del deploy</div>
           <div class="del-feature"><span class="del-feature-check">✓</span> Node.js + TypeScript + React · Win / Mac / Linux</div>
@@ -641,7 +642,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
           <div class="del-feature"><span class="del-feature-check">✓</span> Instalación paso a paso (Windows, Mac, Linux)</div>
           <div class="del-feature"><span class="del-feature-check">✓</span> Uso del wizard web y modo CLI</div>
           <div class="del-feature"><span class="del-feature-check">✓</span> Troubleshooting de 20+ errores comunes</div>
-          <div class="del-feature"><span class="del-feature-check">✓</span> Descargable en PDF · Checklist interactiva</div>
+          <div class="del-feature"><span class="del-feature-check">✓</span> Exportable a PDF · Checklist interactiva</div>
         </div>
         <div class="del-card-footer">
           <a href="manual.html" class="del-btn del-btn-primary">📖 Abrir manual</a>
@@ -677,7 +678,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
       <div>
         <div class="section-tag">INSTALACIÓN</div>
         <h2 class="section-title">En marcha<br/><span>en minutos</span></h2>
-        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:8px;">Cloná el repositorio, instalá las dependencias, compilá y abrí el wizard. Todo lo demás lo hace la herramienta.</p>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:8px;">Cloná el repositorio, instalá las dependencias, compilá y abrí el wizard. Todo lo demás lo hace la herramienta. En ~5 minutos tenés el wizard corriendo; el setup completo de SAP BTP tarda ~38 min.</p>
         <ul class="prereq-list">
           <li><span class="prereq-name">🟢 Node.js</span><span class="prereq-version">18+ LTS</span></li>
           <li><span class="prereq-name">☁️ CF CLI</span><span class="prereq-version">v8.x (no v7)</span></li>
@@ -694,11 +695,11 @@ cd btp-starter-pack
 <span class="comment"># 2. Instalar dependencias del backend</span>
 npm install
 
-<span class="comment"># 3. Compilar frontend</span>
-npm run build:ui
-
-<span class="comment"># 4. Compilar TypeScript → JavaScript</span>
+<span class="comment"># 3. Compilar TypeScript → JavaScript</span>
 npm run build
+
+<span class="comment"># 4. Compilar frontend React</span>
+npm run build:ui
 
 <span class="comment"># 5. Iniciar el wizard en tu máquina local</span>
 npm run start:ui
@@ -797,7 +798,7 @@ npm run start:ui
       <a href="https://www.linkedin.com/in/juan-ignacio-palomeque/" target="_blank">LinkedIn</a>
     </div>
   </div>
-  <div class="footer-copy">SAP, SAP BTP, Cloud Foundry, CAP y SAPUI5 son marcas registradas de SAP SE. · Creado por Juan Ignacio Palomeque.</div>
+  <div class="footer-copy">SAP, SAP BTP, Cloud Foundry, CAP y SAPUI5 son marcas registradas de SAP SE. · BTP Starter Pack es software open source bajo licencia MIT · Creado por Juan Ignacio Palomeque.</div>
 </footer>
 
 <script>
