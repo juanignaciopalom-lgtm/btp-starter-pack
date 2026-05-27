@@ -293,6 +293,4 @@ Especialista en SAP BTP, CAP framework, SAPUI5 y arquitecturas Cloud Foundry ent
 GitHub: [@juanignaciopalom-lgtm](https://github.com/juanignaciopalom-lgtm)
 
 ---
-
-*SAP, SAP BTP, Cloud Foundry, CAP, SAPUI5 son marcas registradas de SAP SE.*
-*Todos los derechos reservados sobre esta herramienta.*
+*Distribuido bajo licencia MIT. SAP, SAP BTP, Cloud Foundry, CAP y SAPUI5 son marcas registradas de SAP SE.*
