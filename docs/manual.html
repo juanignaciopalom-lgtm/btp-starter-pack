@@ -548,8 +548,8 @@
       <div class="code-block">
         <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
         <pre><span class="comment"># Clonar el repositorio</span>
-<span class="prompt">$</span> <span class="cmd">git clone https://github.com/juanignaciopalom-lgtm/rma.git</span>
-<span class="prompt">$</span> <span class="cmd">cd rma/btp-starter-pack</span>
+<span class="prompt">$</span> <span class="cmd">git clone https://github.com/juanignaciopalom-lgtm/btp-starter-pack.git</span>
+<span class="prompt">$</span> <span class="cmd">cd btp-starter-pack</span>
 
 <span class="comment"># Instalar dependencias</span>
 <span class="prompt">$</span> <span class="cmd">npm install</span>
@@ -782,8 +782,8 @@ my-btp-app/
       <h3>Setup inicial</h3>
       <div class="code-block">
         <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
-        <pre><span class="prompt">$</span> <span class="cmd">git clone https://github.com/juanignaciopalom-lgtm/rma.git</span>
-<span class="prompt">$</span> <span class="cmd">cd rma/btp-starter-pack</span>
+        <pre><span class="prompt">$</span> <span class="cmd">git clone https://github.com/juanignaciopalom-lgtm/btp-starter-pack.git</span>
+<span class="prompt">$</span> <span class="cmd">cd btp-starter-pack</span>
 <span class="prompt">$</span> <span class="cmd">npm install</span>
 <span class="prompt">$</span> <span class="cmd">cd ui && npm install && cd ..</span>
 <span class="prompt">$</span> <span class="cmd">cp .env.example .env</span></pre>
@@ -1609,7 +1609,7 @@ ${ctx || 'No especificado'}
 ---
 *Reportado desde el manual interactivo de BTP Starter Pack*`
     );
-    const url = `https://github.com/juanignaciopalom-lgtm/rma/issues/new?title=${title}&body=${body}&labels=bug,btp-starter-pack`;
+    const url = `https://github.com/juanignaciopalom-lgtm/btp-starter-pack/issues/new?title=${title}&body=${body}&labels=bug,btp-starter-pack`;
     window.open(url, '_blank');
     document.getElementById('report-step').value = '';
     document.getElementById('report-error').value = '';

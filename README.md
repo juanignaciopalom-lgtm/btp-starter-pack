@@ -69,8 +69,8 @@ Antes de ejecutar `mbt build`, el wizard detecta y corrige automáticamente los 
 ### Clonar e instalar
 
 ```bash
-git clone https://github.com/juanignaciopalom-lgtm/rma.git
-cd rma/btp-starter-pack
+git clone https://github.com/juanignaciopalom-lgtm/btp-starter-pack.git
+cd btp-starter-pack
 
 # Instalar dependencias backend
 npm install
